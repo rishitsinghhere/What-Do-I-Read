@@ -9,17 +9,29 @@ export default function BookCard({ book }) {
   return (
     <div className="card-book" style={{ width: "200px" }}>
       <Link to={`/book/${book.id}`}>
-        <img
-          src={book.cover}
-          alt={book.title}
-          loading="lazy"
+        <div
           style={{
-            maxwidth: "100px",
-            height: "200px",
-            objectFit: "cover",
+            width: "100%",
+            height: "250px",         // container height
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",      // background filler if aspect ratio differs
             borderRadius: "10px",
+            overflow: "hidden",
           }}
-        />
+        >
+          <img
+            src={book.cover}
+            alt={book.title}
+            loading="lazy"
+            style={{
+              maxWidth: "100%",
+              maxHeight: "100%",
+              objectFit: "contain",  // ✅ shows full image
+              borderRadius: "6px",
+            }}
+          />
+        </div>
       </Link>
 
       {/* Title + Save Button */}
@@ -27,17 +39,25 @@ export default function BookCard({ book }) {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "left",
+          alignItems: "flex-start",
           marginTop: "8px",
+          gap: "8px",
         }}
       >
-        <h4 style={{ margin: 0, fontSize: "15px", flex: 1 }}>{book.title}</h4>
+        <h4
+          style={{
+            margin: 0,
+            fontSize: "15px",
+            flex: 1,
+            lineHeight: "1.3",
+            whiteSpace: "normal",
+            overflow: "visible",
+            textOverflow: "unset",
+          }}
+        >
+          {book.title}
+        </h4>
         <SaveButton bookId={book.id} isSaved={isSaved} />
-      </div>
-
-      {/* Author full width */}
-      <div className="meta" style={{ marginTop: "4px" }}>
-        {book.authors.join(", ")}
       </div>
     </div>
   );
