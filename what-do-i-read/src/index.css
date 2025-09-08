@@ -22,6 +22,10 @@
   --radius-sm: 12px;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 140px; /* adjust based on navbar height */
+}
 
 .background-video {
   position: fixed;
@@ -192,8 +196,7 @@ genre-card:hover{
 /* Auto-fit for max 5 columns */
 .grid-5 {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 60px
-
+  gap: 60px;
 }
 
 .grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
@@ -339,6 +342,7 @@ genre-card:hover{
 
 
 .btn:hover {   transform: scale(1.05);}
+
 .btn.primary ,.btn.ghost { 
   background: linear-gradient(270deg,  #533800,#c2a460, #81551b);
   background-size: 600% 600%;
@@ -396,8 +400,6 @@ genre-card:hover{
   text-shadow: 0 2px 6px rgba(0,0,0,0.8);
 }
 
-
-
 .book {
   display: flex;
   flex-direction: column;
@@ -438,7 +440,13 @@ genre-card:hover{
   white-space: normal; /* let author names wrap */
 }
 
-.row { display: flex; gap: 20px; align-items: center;justify-content: space-between; flex-wrap: wrap ;}
+.row { 
+  display: flex; 
+  gap: 20px; 
+  align-items: center;
+  justify-content: space-between; 
+  flex-wrap: wrap ;
+}
 
 .pill {
   padding: 6px 10px;
@@ -447,7 +455,7 @@ genre-card:hover{
   border-radius: 999px;
   font-size: 12px;
 }
-.list-h { display: flex; gap: 40px; overflow: auto; padding-bottom: 4px }
+.list-h { display: flex; gap: 100px; overflow: auto; padding-bottom: 4px }
 .list-h::-webkit-scrollbar {
   display: none;
 }
@@ -455,10 +463,6 @@ genre-card:hover{
   -ms-overflow-style: none;  /* IE/Edge */
   scrollbar-width: none;     /* Firefox */
 }
-
-
-
-
 
 .input {
   width: 100%;
@@ -496,4 +500,24 @@ genre-card:hover{
   text-align: center;
   padding: 28px 0;
   color: var(--muted);
+}
+
+#password-toggle {
+  font-size: 1.2em;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%); /* This vertically centers the icon */
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+}
+
+.series-section {
+  margin: 30px 0px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6));
 }
