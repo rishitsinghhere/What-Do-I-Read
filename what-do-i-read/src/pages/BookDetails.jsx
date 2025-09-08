@@ -1,15 +1,35 @@
 import { useParams } from "react-router-dom";
 import { useLibrary } from "../context/LibraryContext";
-import { booksById } from "../data/books";
+import * as Realm from "realm-web";
+import { useEffect, useState } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { getAnonymousUser } from "../auth";
 
 
 export default function BookDetails(){
   const { bookId } = useParams();
-  const book = booksById[bookId];
   const { saved, setProgress, playlists, addToPlaylist, removeFromPlaylist, toggleSave } = useLibrary();
+  const [book, setBook] = useState(null);
   const isSaved = !!saved[bookId];
   const progress = saved[bookId]?.progress ?? 0;
+
+  useEffect(() => {
+    async function fetchBook() {
+      const user = await getAnonymousUser();
+
+      const mongodb = user.mongoClient("mongodb-atlas");
+      const booksCollection = mongodb.db("What-Do-I-Read").collection("books");
+
+      const findBook = await booksCollection.findOne({
+        id: bookId
+      });
+
+      setBook(findBook);
+
+    }
+
+    fetchBook();
+  }, [bookId]);
 
   if (!book) return <div>Not found.</div>;
 
@@ -41,11 +61,11 @@ export default function BookDetails(){
         )}
         <div className="sep" />
         <div className="label">Reading Progress</div>
-        <input type="range" min="0" max="100" value={progress}
+        <input type="range" min="0" max={book.pages} value={progress}
           onChange={(e)=>setProgress(book.id, Number(e.target.value))}
           style={{width:"100%"}}
         />
-        <div className="row"><div className="pill">{percent}% read</div></div>
+        <div className="row"><div className="pill">{percent} pages read</div></div>
 
         <div className="sep" />
         <div className="label">Playlists</div>
@@ -64,7 +84,7 @@ export default function BookDetails(){
         <div className="sep" />
         <div className="label">About this book</div>
         <p className="muted">
-          Curated metadata for demo. Replace with API data later. Explore reviews, related works, and upcoming releases by the author in your backend phase.
+          {book.summary}
         </p>
       </div>
     </div>
