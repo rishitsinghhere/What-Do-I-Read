@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { registerUser, loginUser, updateUserProfile } from "../mongo";
 
 const AuthCtx = createContext(null);
 const KEY = "wdir_user";
@@ -14,28 +15,46 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem(KEY);
   }, [user]);
 
-  const login = (email, password) => {
-    const name = email.split("@")[0];
-    const photo = `https://api.dicebear.com/9.x/identicon/svg?seed=${encodeURIComponent(
-      name
-    )}`;
-    setUser({ email, name, photo });
+  const login = async (email, password) => {
+    try {
+      const userData = await loginUser(email, password);
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      throw error;
+    }
   };
 
-  const register = (name, email, password) => {
-    const photo = `https://api.dicebear.com/9.x/identicon/svg?seed=${encodeURIComponent(
-      name
-    )}`;
-    setUser({ email, name, photo });
+  const register = async (username, email, password) => {
+    try {
+      const userData = await registerUser(username, email, password);
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      throw error;
+    }
   };
 
-  const updateProfile = (patch) => setUser((u) => ({ ...u, ...patch }));
+  const updateProfile = async (patch) => {
+    try {
+      if (user && user._id) {
+        await updateUserProfile(user._id, patch);
+        const updatedUser = { ...user, ...patch };
+        setUser(updatedUser);
+        return updatedUser;
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const logout = () => setUser(null);
 
   const value = useMemo(
     () => ({ user, login, register, updateProfile, logout }),
     [user]
   );
+  
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
