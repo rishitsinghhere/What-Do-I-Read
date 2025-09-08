@@ -1,16 +1,39 @@
-import { useMemo, useState } from "react";
-import { genres, books } from "../data/books";
+import { useMemo, useState, useEffect } from "react";
 import BookCard from "../components/BookCard";
+import * as Realm from "realm-web";
+import { getAnonymousUser } from "../auth";
 
 export default function SelectGenres(){
+  const [genres, setGenres] = useState([]);
+  const [books, setBooks] = useState([]);
   const [selected, setSelected] = useState([]);
-  const toggle = (id) =>
-    setSelected((s) => (s.includes(id) ? s.filter(x=>x!==id) : [...s, id]));
 
-  const results = useMemo(()=>{
-    if (!selected.length) return books.slice(0,12);
-    return books.filter(b => selected.includes(b.genreId));
-  },[selected]);
+  const toggle = (id) => setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+
+  useEffect(() => {
+    async function fetchData() {
+      const user = await getAnonymousUser();
+
+      const mongodb = user.mongoClient("mongodb-atlas");
+      const db = mongodb.db("What-Do-I-Read");
+      const booksCollection = db.collection("books");
+      const genresCollection = db.collection("genres");
+
+      const [fetchedGenres, fetchedBooks] = await Promise.all([
+        genresCollection.find({}),
+        booksCollection.find({}),
+      ]);
+
+      setGenres(fetchedGenres);
+      setBooks(fetchedBooks);
+    }
+    fetchData();
+  }, []);
+
+  const results = useMemo(() => {
+    if (!selected.length) return books.slice(0, 12);
+    return books.filter((b) => selected.includes(b.genreId));
+  }, [selected, books]);
 
   return (
     <>
