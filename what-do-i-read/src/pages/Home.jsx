@@ -1,17 +1,33 @@
 import { useNavigate } from "react-router-dom";
-import { genres, books } from "../data/books";
 import BookCard from "../components/BookCard";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { getAnonymousUser } from "../auth";
+import * as Realm from "realm-web";
 
 export default function Home() {
   const nav = useNavigate();
-  const featured = books.sort(() => 0.5 - Math.random()).slice(0, 10);
+  const [featured, setFeatured] = useState([]);
 
   // Refs for auto-scrolling marquee
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
   const xRef = useRef(0);
   const halfWRef = useRef(0);
+
+  useEffect(() => {
+    async function fetchBooks() {
+      const user = await getAnonymousUser();
+
+      const mongodb = user.mongoClient("mongodb-atlas");
+      const booksCollection = mongodb.db("What-Do-I-Read").collection("books");
+
+      const allBooks = await booksCollection.find({});
+      const shuffled = allBooks.sort(() => 0.5 - Math.random());
+      setFeatured(shuffled.slice(0, 10));
+    }
+
+    fetchBooks();
+  }, []);
 
   useEffect(() => {
     const track = trackRef.current;
