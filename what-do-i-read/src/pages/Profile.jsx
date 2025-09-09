@@ -167,7 +167,7 @@ export default function Profile() {
           width: "100%",
         }}
       >
-        <h3 style={{ margin: 0 }}>Library</h3>
+        <h3 style={{ margin: 0 }}>Libraries</h3>
         <button
           className="btn"
           onClick={() => {
@@ -175,7 +175,7 @@ export default function Profile() {
             if (playlistName) createPlaylist(playlistName);
           }}
         >
-          New Playlist
+          New Library
         </button>
       </div>
 

@@ -39,7 +39,7 @@ export default function SelectGenres(){
     <>
     <div class ="container-selectgenres">
       <h2 style={{margin:"10px 0 8px"}}>Select Genres</h2>
-      <p className="muted" style={{marginTop:0}}>Pick one or many. Results update instantly.</p>
+      <p className="muted" style={{marginTop:0}}>Pick one or many</p>
 
     <hr style={{ marginTop: 40,  borderColor: "transparent"}} />
 

@@ -110,7 +110,7 @@ export default function Auth(){
                 </button>
               </div>
 
-              {mode !== "login" && (
+              {(
                 <small style={{ color: "var(--muted)", fontSize: "12px", marginTop: "4px" }}>
                   Must be 8+ characters with uppercase, lowercase, number, and special character
                 </small>
@@ -144,7 +144,7 @@ export default function Auth(){
           <h3 style={{marginTop:6}}>Why create an account?</h3>
         <div className="feature-card" style ={{  background: "rgba(255, 255, 255, 0.05)", marginBottom: "40px"}}>
             <h3>Custom Libraries</h3>
-            <p>Save books into collections that match your vibe.</p>
+            <p>Save books into libraries that match your vibe.</p>
           </div>
            <div className="feature-card" style ={{  background: "rgba(255, 255, 255, 0.05)", marginBottom: "20px"}}>
             <h3>Smart Progress</h3>

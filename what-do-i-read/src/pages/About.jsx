@@ -50,7 +50,7 @@ export default function About() {
               backend systems and experimenting with frameworks.
             </p>
             <h4>Hobbies</h4>
-            <p className="muted">Gaming • Fantasy Books • Coffee Lover</p>
+            <p className="muted">Gaming • Fantasy Books • Tea Lover</p>
           </div>
         </div>
       </div>

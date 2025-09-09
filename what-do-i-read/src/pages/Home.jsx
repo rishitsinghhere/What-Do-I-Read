@@ -95,7 +95,7 @@ export default function Home() {
             <h2>Start Your Journey</h2>
             <p>
               Pick a genre, explore hand-picked books and series, save them into
-              playlists, and track your progress as you read.
+              libraries, and track your progress as you read.
             </p>
             <button 
               className="btn primary" 
@@ -151,12 +151,12 @@ export default function Home() {
       <div className="step-card">
         <div className="step-number">2</div>
         <h3>Explore & Save</h3>
-        <p>Browse books, build custom playlists, and mark progress.</p>
+        <p>Browse books, build custom libraries, and mark progress.</p>
       </div>
       <div className="step-card">
         <div className="step-number">3</div>
         <h3>Track Your Journey</h3>
-        <p>See your reading history, pages read, and achievements.</p>
+        <p>See your reading history & pages read.</p>
       </div>
     </div>
 
@@ -165,12 +165,12 @@ export default function Home() {
         <h2 className="label">Our Features</h2>
         <div className="features-grid">
           <div className="feature-card">
-            <h3>Custom Playlists</h3>
+            <h3>Custom Libraries</h3>
             <p>Save books into collections that match your vibe.</p>
           </div>
           <div className="feature-card">
             <h3>Smart Progress</h3>
-            <p>Track pages read, completed books, and goals.</p>
+            <p>Track pages read & completed books.</p>
           </div>
           <div className="feature-card">
             <h3>Genre Library</h3>
