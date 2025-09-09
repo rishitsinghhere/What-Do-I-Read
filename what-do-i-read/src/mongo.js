@@ -86,7 +86,6 @@ export async function registerUser(username, email, password) {
             name: username,
             email: email,
             password: password,
-            imageUrl: "",
             savedBooks: [],
             playlists: [{
                 id: "default",
