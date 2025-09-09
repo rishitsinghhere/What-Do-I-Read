@@ -167,7 +167,7 @@ export default function Profile() {
           width: "100%",
         }}
       >
-        <h3 style={{ margin: 0 }}>Playlists</h3>
+        <h3 style={{ margin: 0 }}>Library</h3>
         <button
           className="btn"
           onClick={() => {

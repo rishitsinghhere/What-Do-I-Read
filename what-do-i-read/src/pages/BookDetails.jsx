@@ -68,7 +68,7 @@ export default function BookDetails(){
         <div className="row"><div className="pill">{percent} pages read</div></div>
 
         <div className="sep" />
-        <div className="label">Playlists</div>
+        <div className="label">Library</div>
         <div className="row">
           {playlists.map(pl=>{
             const inPl = pl.bookIds.includes(book.id);

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { updateUserPlaylists, updateUserSavedBooks } from "../mongo";
 import { getAnonymousUser } from "../auth";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const LibCtx = createContext(null);
 
@@ -11,6 +12,7 @@ export function LibraryProvider({ children }) {
   const [booksById, setBooksById] = useState({});
   const [saved, setSaved] = useState({});
   const [playlists, setPlaylists] = useState([{ id: "default", name: "Saved", bookIds: [] }]);
+  const navigate = useNavigate();
 
   // Fetch all books from database on component mount
   useEffect(() => {
@@ -66,7 +68,8 @@ export function LibraryProvider({ children }) {
 
   const toggleSave = async (bookId) => {
     if (!user) {
-      alert("Please log in to save books.");
+      alert("Please log in to save books to your library.");
+      navigate('/auth');
       return;
     }
 
@@ -139,6 +142,7 @@ export function LibraryProvider({ children }) {
   const createPlaylist = async (name) => {
     if (!user) {
       alert("Please log in to create playlists.");
+      navigate("/auth");
       return;
     }
 
