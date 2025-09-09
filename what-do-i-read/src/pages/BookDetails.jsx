@@ -63,11 +63,10 @@ export default function BookDetails(){
         </div>
         <div className="muted">{book.authors.join(", ")} • {book.pages} pages • {book.year}</div>
         {book.rating && (
-          <div style={{ marginTop: "4px" }}>
+          <div style={{ marginTop: "18px" }}>
             <StarRating rating={book.rating} />
           </div>
         )}
- 
         <div className="sep" />
         <div className="label">Reading Progress</div>
         <input type="range" min="0" max={book.pages} value={progress}
