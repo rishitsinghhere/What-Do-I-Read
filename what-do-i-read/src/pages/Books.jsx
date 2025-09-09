@@ -63,13 +63,15 @@ export default function Books(){
 
   return (
     <>
+
+    
       <div className="container-books">
         <h2 style={{margin:"10px 0 14px"}}>{genreName || "Books"}</h2>
-        
+        <hr></hr>
         {/* Standalone Books Section */}
         {standaloneBooks.length > 0 && (
           <div className="standalone-books-section">
-            <h3 style={{margin:"20px 0 14px"}}>Standalone Books</h3>
+            <h3 style={{margin:"20px 10px"}}>Standalone Books</h3>
             <div className="grid grid-5">
               {standaloneBooks.map(book => (
                 <BookCard key={book.id} book={book} />
@@ -79,6 +81,7 @@ export default function Books(){
         )}
 
         {/* Series Sections */}
+        
         {Object.keys(seriesBooks).map(seriesName => (
           <div key={seriesName} className="series-section">
             <h3 style={{margin:"20px 0 14px"}}>

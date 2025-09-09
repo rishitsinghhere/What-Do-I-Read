@@ -37,6 +37,14 @@ export default function BookDetails(){
   const percent = Math.round(progress);
 
   return (
+
+    <>
+     <video autoPlay muted loop playsInline className="background-video">
+        <source src="/Media/bgvideo3.mp4" type="video/mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+      <div className="video-overlay"></div>
+
 <div class = "container-bookdetails">
     <div className="grid" style={{gridTemplateColumns:"320px 1fr", gap:20}}>
       <div className="card" style={{padding:16}}>
@@ -59,6 +67,7 @@ export default function BookDetails(){
             <StarRating rating={book.rating} />
           </div>
         )}
+ 
         <div className="sep" />
         <div className="label">Reading Progress</div>
         <input type="range" min="0" max={book.pages} value={progress}
@@ -89,5 +98,6 @@ export default function BookDetails(){
       </div>
     </div>
 </div>
+</>
   )
 }

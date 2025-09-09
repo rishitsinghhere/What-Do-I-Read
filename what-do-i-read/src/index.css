@@ -75,11 +75,50 @@ button, input, select, textarea {
 
 
 
-.container-genres,.container-bookdetails,.container-selectgenres,.container-books,.container-about,.container-profile,.container-auth{
+.container-genres,.container-bookdetails,.container-selectgenres,.container-books,.container-profile,.container-auth{
   max-width: 1200px; /* or whatever you prefer */
   margin-left: auto;
   margin-right: auto;
   padding: 160px 20px;   /* optional: space from edges on smaller screens */
+}
+
+
+.container-about{
+  text-align: center;
+  max-width: 1100px; /* or whatever you prefer */
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  padding: 160px 20px;
+}
+
+.dev-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  margin-top: 16px;
+}
+
+.dev-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.dev-card:hover {
+  transform: translateY(-6px);
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  object-fit: cover;
 }
 
 
@@ -340,6 +379,24 @@ genre-card:hover{
   padding: 10px;
 }
 
+.btn-clear{
+  border-radius: 40px;
+  padding: 10px 10px;
+  font-weight: 600;
+  background-color: rgb(165, 0, 0);
+  background-size: 600% 600%;
+  transition: transform 0.2s ease-in-out;
+  animation: gradientShift 5s ease infinite;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+
+.btn-clear:hover{
+  padding : 10px 30px;
+  box-shadow: 0 6px 20px rgb(125, 17, 0);
+}
+
 
 .btn:hover {   transform: scale(1.05);}
 
@@ -376,29 +433,72 @@ genre-card:hover{
   align-items: center;
   margin-top: 80px;
 }
-.hero h1 { font-size: 44px; line-height: 1.05; margin: 0 }
+.hero h1 { font-size: 44px; line-height: 1.05; }
 
 
 .hero p { color: var(--muted); margin: 8px 0 18px }
-.hero-panel {
-  grid-column: 1 / -1;   /* span across all columns */
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6));
-  border-radius: var(--radius);
-  padding: 22px;
-}
 
-.hero-panel p {
-  color: #d1d5db; /* softer gray */
-  font-size: 16px;
-  line-height: 1.6;
+.hero-panel {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  height: 270px; /* full screen hero */
+  padding: 20px;
+  border-radius: var(--radius);
+
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6));
+  background-size: 100% 100%;
+
+  overflow: hidden;
+  position: relative;
 }
 
 .hero-panel h2 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+  font-size: 42px;
+  font-weight: 800;
+  margin-top: 0px;
+  margin-bottom: 4px;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.9);
+  color: #fff;
+
 }
+
+.hero-panel p {
+  color: #d1d5db;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+/* Button styling */
+.hero-panel .btn.primary {
+  background: linear-gradient(135deg, #ffea00, #cc5200);
+  color: white;
+  font-size: 25px;
+  font-weight: 600;
+  padding: 14px 100px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+
+  box-shadow: 0 6px 20px rgb(252, 211, 47);
+  transition: all 0.3s ease;
+
+
+  transform: scale(0.6);
+  animation: fadeScaleIn 1s ease forwards;
+  animation-delay: 1s;
+}
+
+.hero-panel .btn.primary:hover {
+  transform: scale(0.8);
+  box-shadow: 0 8px 30px rgb(255, 106, 0);
+}
+
+
 
 .book {
   display: flex;
@@ -455,14 +555,29 @@ genre-card:hover{
   border-radius: 999px;
   font-size: 12px;
 }
-.list-h { display: flex; gap: 100px; overflow: auto; padding-bottom: 4px }
-.list-h::-webkit-scrollbar {
+
+.list-h { display: flex; gap: 100px; overflow: auto; 
+  padding-bottom: 4px;   -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */ }
+
+  .list-h::-webkit-scrollbar {
   display: none;
 }
-.list-h {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;     /* Firefox */
+
+.list-h-profile{
+   display: flex; gap: 100px; overflow:auto; padding-bottom: 20px
 }
+
+.list-h-profile::-webkit-scrollbar {
+  scrollbar-color: white;
+  scrollbar-width: thin; 
+  height: 8px; 
+}
+
+.list-h-profile::-webkit-scrollbar-track {
+background: rgb(54, 53, 53);
+}
+
 
 .input {
   width: 100%;
@@ -473,7 +588,10 @@ genre-card:hover{
   color: var(--text);
 }
 .select { padding: 10px; border-radius: 10px; background: #0c0c12; border: 1px solid var(--border) }
-.label { font-size: 20px;  margin-top: 50px ;margin-left: 20px;}
+.label { font-size: 20px;  margin-top: 50px ;margin-left: 20px; margin-bottom: 20px;}
+
+
+.form-row .label {  margin-top: 25px}
 
 .form { display: grid; gap: 12px }
 .form-row { display: grid; gap: 8px }
@@ -519,5 +637,5 @@ genre-card:hover{
   padding: 15px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6));
+  background: rgba(255, 255, 255, 0.05);
 }

@@ -91,18 +91,19 @@ export default function Home() {
 
         {/* HERO PANEL */}
         <div className="hero">
-          <div className="hero-panel">
+        <div className="hero-panel">
             <h2>Start Your Journey</h2>
             <p>
               Pick a genre, explore hand-picked books and series, save them into
               playlists, and track your progress as you read.
             </p>
-            <div className="row">
-              <button className="btn primary" onClick={() => nav("/select-genres")}>
-                Select Genres
-              </button>
-            </div>
-          </div>
+            <button 
+              className="btn primary" 
+              onClick={() => nav("/select-genres")}
+            >
+              Select Genres
+            </button>
+           </div>
         </div>
 
         {/* TRENDING PICKS */}

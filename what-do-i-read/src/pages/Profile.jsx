@@ -142,11 +142,11 @@ export default function Profile() {
         <div className="card" style={{ padding: 16 }}>
           <h3 style={{ margin: 0 }}>Saved Books</h3>
           <div className="row" style={{ marginTop: 12 }}>
-            <div className="list-h" style={{ marginTop: 10, overflowX: "auto" }}>
+            <div className="list-h-profile" style={{ marginTop: 10}}>
               {Object.keys(saved).map((id) => {
                 const b = booksById[id];
                 return b ? (
-                  <div key={id}  style={{ width: 130, flexShrink: 0 }}>
+                  <div key={id}  style={{ width: 200, flexShrink: 0 }}>
                     <BookCard book={b} />
                   </div>
                 ) : null;

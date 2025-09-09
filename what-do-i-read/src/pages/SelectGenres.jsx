@@ -53,7 +53,7 @@ export default function SelectGenres(){
             {g.name}
           </button>
         ))}
-        <button className="btn" onClick={()=>setSelected([])}>Clear</button>
+        <button className="btn-clear" onClick={()=>setSelected([])}>Clear</button>
       </div>
 
        <hr style={{ marginTop: 50, marginBottom: 50 , borderColor: "#333", borderWidth: "2px" }} />

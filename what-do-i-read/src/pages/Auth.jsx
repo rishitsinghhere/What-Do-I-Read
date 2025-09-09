@@ -36,6 +36,13 @@ export default function Auth(){
   const [showPassword, setShowPassword] = useState(false);
 
   return (
+    <>
+      <video autoPlay muted loop playsInline className="background-video">
+        <source src="/Media/bgvideo3.mp4" type="video/mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+      <div className="video-overlay"></div>
+
     <div className="container-auth">
       <div className="grid" style={{gridTemplateColumns:"1fr 1fr",gap:20}}>
         <div className="card" style={{padding:18}}>
@@ -133,14 +140,21 @@ export default function Auth(){
           </div>
         </div>
         <div className="card" style={{padding:18}}>
+         
           <h3 style={{marginTop:6}}>Why create an account?</h3>
-          <ul>
-            <li>Save books to your Profile</li>
-            <li>Track your reading progress</li>
-            <li>Create Custom playlists</li>
-          </ul>
+        <div className="feature-card" style ={{  background: "rgba(255, 255, 255, 0.05)", marginBottom: "40px"}}>
+            <h3>Custom Libraries</h3>
+            <p>Save books into collections that match your vibe.</p>
+          </div>
+           <div className="feature-card" style ={{  background: "rgba(255, 255, 255, 0.05)", marginBottom: "20px"}}>
+            <h3>Smart Progress</h3>
+            <p>Track pages read & completed books</p>
+          </div>
+      
+          
         </div>
       </div>
     </div>  
+  </>
   )
 }
