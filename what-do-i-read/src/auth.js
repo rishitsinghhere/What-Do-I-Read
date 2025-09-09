@@ -35,7 +35,7 @@ export async function loginUser(email, password) {
 export async function saveBookForUser(bookId) {
   const user = app.currentUser;
   if (!user || user.isLoggedIn === false || user.providerType === "anon-user") {
-    throw new Error("You must be logged in to save books.");
+    throw new Error("Please log in to save books to your library.");
   }
 
   const mongo = user.mongoClient("mongodb-atlas");

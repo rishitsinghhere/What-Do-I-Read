@@ -120,7 +120,7 @@ export async function loginUser(email, password) {
         const user = await usersCollection.findOne({ email: email, password: password });
         
         if (!user) {
-            throw new Error("Invalid email or password. Please check your credentials and try again.");
+            throw new Error("Account does not exists.");
         }
         
         return user;
