@@ -125,9 +125,9 @@ export default function About() {
           </div>
 
           <div className="book-card">
-            <img src="https://m.media-amazon.com/images/I/61jl29eQPSL._UF1000,1000_QL80_.jpg" alt="Favourite Book 2" />
+            <img src="https://m.media-amazon.com/images/I/91zOqQ7U5sL._SL1500_.jpg" alt="Favourite Book 2" />
             <div className="overlay">
-              <p><strong>Heet's pick</strong><hr></hr>Lots & Lots of Bloodshed, But that's what I like</p>
+              <p><strong>Heet's pick</strong><hr></hr>Love dressed in obsession, wrapped in ruin.</p>
             </div>
           </div>
 
