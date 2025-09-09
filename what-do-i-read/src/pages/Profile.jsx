@@ -179,7 +179,7 @@ export default function Profile() {
         </button>
       </div>
 
-      {playlists.map((pl) => (
+      {playlists.filter(pl => pl.name !== "Saved").map((pl) => (
         <div
           key={pl.id}
           className="card"
@@ -192,7 +192,7 @@ export default function Profile() {
               onChange={(e) => renamePlaylist(pl.id, e.target.value)}
               style={{ width: "90%" }}
             />
-            {pl.id !== "default" && (
+            {(
               <button className="btn" onClick={() => removePlaylist(pl.id)}>
                 Delete
               </button>

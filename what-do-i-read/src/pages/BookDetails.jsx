@@ -78,7 +78,7 @@ export default function BookDetails(){
         <div className="sep" />
         <div className="label">Library</div>
         <div className="row">
-          {playlists.map(pl=>{
+          {playlists.filter(pl => pl.name !== "Saved").map(pl=>{
             const inPl = pl.bookIds.includes(book.id);
             return (
               <button key={pl.id} className="btn"

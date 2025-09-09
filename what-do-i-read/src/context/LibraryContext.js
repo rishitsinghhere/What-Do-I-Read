@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { updateUserPlaylists, updateUserSavedBooks } from "../mongo";
 import { getAnonymousUser } from "../auth";
 import { useAuth } from "./AuthContext";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const LibCtx = createContext(null);
 
@@ -11,7 +11,7 @@ export function LibraryProvider({ children }) {
   
   const [booksById, setBooksById] = useState({});
   const [saved, setSaved] = useState({});
-  const [playlists, setPlaylists] = useState([{ id: "default", name: "Saved", bookIds: [] }]);
+  const [playlists, setPlaylists] = useState([]);
   const navigate = useNavigate();
 
   // Fetch all books from database on component mount
@@ -57,12 +57,12 @@ export function LibraryProvider({ children }) {
       if (user.playlists) {
         setPlaylists(user.playlists);
       } else {
-        setPlaylists([{ id: "default", name: "Saved", bookIds: [] }]);
+        setPlaylists([]);
       }
     } else {
       // Clear data when no user
       setSaved({});
-      setPlaylists([{ id: "default", name: "Saved", bookIds: [] }]);
+      setPlaylists([]);
     }
   }, [user]);
 
@@ -89,20 +89,6 @@ export function LibraryProvider({ children }) {
       }
       return next;
     });
-    
-    // Update default playlist
-    setPlaylists((pls) =>
-      pls.map((p) =>
-        p.id === "default"
-          ? {
-              ...p,
-              bookIds: isSaved
-                ? p.bookIds.filter((id) => id !== bookId)
-                : [...new Set([bookId, ...p.bookIds])],
-            }
-          : p
-      )
-    );
 
     // Update database
     try {
@@ -111,19 +97,6 @@ export function LibraryProvider({ children }) {
         : [...Object.values(saved), { bookId, progress: 0, addedAt: Date.now() }];
       
       await updateUserSavedBooks(user._id, newSavedBooks);
-      
-      // Update playlists in database too
-      const updatedPlaylists = playlists.map((p) =>
-        p.id === "default"
-          ? {
-              ...p,
-              bookIds: isSaved
-                ? p.bookIds.filter((id) => id !== bookId)
-                : [...new Set([bookId, ...p.bookIds])],
-            }
-          : p
-      );
-      await updateUserPlaylists(user._id, updatedPlaylists);
     } catch (error) {
       console.error("Error saving book:", error);
       // Revert local state on error
