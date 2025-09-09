@@ -2,7 +2,7 @@ export default function About() {
   return (
 <>
       <video autoPlay muted loop playsInline className="background-video">
-        <source src="/Media/bgvideo3.mp4" type="video/mp4" />
+        <source src="/Media/bgvideo4.mp4" type="video/mp4" />
         Your browser does not support HTML5 video.
       </video>
       <div className="video-overlay"></div>
