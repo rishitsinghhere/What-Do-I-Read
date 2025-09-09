@@ -4,6 +4,7 @@ import * as Realm from "realm-web";
 import { useEffect, useState } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { getAnonymousUser } from "../auth";
+import StarRating from "../components/StarRating";
 
 
 export default function BookDetails(){
@@ -53,10 +54,9 @@ export default function BookDetails(){
 
         </div>
         <div className="muted">{book.authors.join(", ")} • {book.pages} pages • {book.year}</div>
-        {book.series && (
-          <div className="row" style={{marginTop:10}}>
-            <span className="pill">Series: {book.series.name}</span>
-            <span className="pill">Vol. {book.series.volume}</span>
+        {book.rating && (
+          <div style={{ marginTop: "4px" }}>
+            <StarRating rating={book.rating} />
           </div>
         )}
         <div className="sep" />
