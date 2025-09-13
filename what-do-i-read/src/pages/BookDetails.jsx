@@ -6,7 +6,6 @@ import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { getAnonymousUser } from "../auth";
 import StarRating from "../components/StarRating";
 
-
 export default function BookDetails(){
   const { bookId } = useParams();
   const { saved, setProgress, playlists, addToPlaylist, removeFromPlaylist, toggleSave } = useLibrary();
@@ -26,7 +25,6 @@ export default function BookDetails(){
       });
 
       setBook(findBook);
-
     }
 
     fetchBook();
@@ -34,10 +32,10 @@ export default function BookDetails(){
 
   if (!book) return <div>Not found.</div>;
 
-  const percent = Math.round(progress);
+  // Calculate percentage based on pages, not the raw progress value
+  const percentage = book.pages > 0 ? Math.round((progress / book.pages) * 100) : 0;
 
   return (
-
     <>
      <video autoPlay muted loop playsInline className="background-video">
         <source src="/Media/bgvideo3.mp4" type="video/mp4" />
@@ -81,14 +79,14 @@ export default function BookDetails(){
           })}
         </div>
 
-        <div className="sep" />
-        <div className="label">About this book</div>
-        <p className="muted">
-          {book.summary}
-        </p>
+            <div className="sep" />
+            <div className="label">About this book</div>
+            <p className="muted">
+              {book.summary}
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
-</div>
-</>
+    </>
   )
 }

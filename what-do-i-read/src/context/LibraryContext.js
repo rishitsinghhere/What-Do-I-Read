@@ -97,6 +97,7 @@ export function LibraryProvider({ children }) {
         : [...Object.values(saved), { bookId, progress: 0, addedAt: Date.now() }];
       
       await updateUserSavedBooks(user._id, newSavedBooks);
+      console.log("Book save toggled successfully in database");
     } catch (error) {
       console.error("Error saving book:", error);
       // Revert local state on error
@@ -129,6 +130,7 @@ export function LibraryProvider({ children }) {
     // Update database
     try {
       await updateUserPlaylists(user._id, newPlaylists);
+      console.log("Playlist created successfully in database");
     } catch (error) {
       console.error("Error creating playlist:", error);
       // Revert on error
@@ -146,6 +148,7 @@ export function LibraryProvider({ children }) {
     // Update database
     try {
       await updateUserPlaylists(user._id, updatedPlaylists);
+      console.log("Playlist renamed successfully in database");
     } catch (error) {
       console.error("Error renaming playlist:", error);
     }
@@ -161,6 +164,7 @@ export function LibraryProvider({ children }) {
     // Update database
     try {
       await updateUserPlaylists(user._id, updatedPlaylists);
+      console.log("Playlist removed successfully from database");
     } catch (error) {
       console.error("Error removing playlist:", error);
       // Revert on error
@@ -185,6 +189,7 @@ export function LibraryProvider({ children }) {
     // Update database
     try {
       await updateUserPlaylists(user._id, updatedPlaylists);
+      console.log("Book added to playlist successfully in database");
     } catch (error) {
       console.error("Error adding to playlist:", error);
     }
@@ -204,32 +209,46 @@ export function LibraryProvider({ children }) {
     // Update database
     try {
       await updateUserPlaylists(user._id, updatedPlaylists);
+      console.log("Book removed from playlist successfully in database");
     } catch (error) {
       console.error("Error removing from playlist:", error);
     }
   };
 
   const setProgress = async (bookId, value) => {
-    if (!user) return;
+  console.log("setProgress called:", { bookId, value, userId: user?._id });
 
-    // Update local state
-    const updatedSaved = { 
-      ...saved, 
-      [bookId]: { 
-        ...(saved[bookId] || { bookId }), 
-        progress: value, 
-        addedAt: saved[bookId]?.addedAt || Date.now() 
-      } 
-    };
-    setSaved(updatedSaved);
+  if (!user) {
+    alert("Please log in to track your reading progress.");
+    return;
+  }
 
-    // Update database
-    try {
-      await updateUserSavedBooks(user._id, Object.values(updatedSaved));
-    } catch (error) {
-      console.error("Error updating progress:", error);
-    }
+  // Prepare updated book object
+  const updatedBook = {
+    ...(saved[bookId] || { bookId }),
+    progress: value,
+    addedAt: saved[bookId]?.addedAt || Date.now(),
   };
+
+  // Update local state first for UI feedback
+  setSaved(prev => ({
+    ...prev,
+    [bookId]: updatedBook,
+  }));
+
+  console.log("Updated local state, now updating database with:", updatedBook);
+
+  // Update only that book in DB
+  try {
+    const result = await updateUserSavedBooks(user._id, updatedBook);
+    console.log("Progress updated successfully in database:", result);
+  } catch (error) {
+    console.error("Error updating progress in database:", error);
+    // Optionally revert local state if needed
+    setSaved(saved);
+  }
+};
+
 
   const value = useMemo(
     () => ({

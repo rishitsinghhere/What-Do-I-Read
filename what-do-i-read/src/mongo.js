@@ -1,5 +1,8 @@
 import * as Realm from "realm-web";
 
+// Add this line
+const { BSON } = Realm;
+
 const app = new Realm.App({ id: "what-do-i-read-uxbmken" });
 
 export function getBooksCollection() {
@@ -167,17 +170,31 @@ export async function updateUserPlaylists(userId, playlists) {
     }
 }
 
-export async function updateUserSavedBooks(userId, savedBooks) {
-    try {
-        await authenticateAnonymously();
-        const usersCollection = getUsersCollection();
-        const result = await usersCollection.updateOne(
-            { _id: userId },
-            { $set: { savedBooks: savedBooks } }
-        );
-        return result;
-    } catch (error) {
-        console.error("Error updating saved books:", error);
-        throw error;
+export async function updateUserSavedBooks(userId, book) {
+  try {
+    await authenticateAnonymously();
+    const usersCollection = getUsersCollection();
+
+    // Ensure _id is treated as ObjectId
+    const objectId = typeof userId === "string" ? new BSON.ObjectId(userId) : userId;
+
+    // Try to update progress if the book already exists
+    const result = await usersCollection.updateOne(
+      { _id: objectId, "savedBooks.bookId": book.bookId },
+      { $set: { "savedBooks.$.progress": book.progress } }
+    );
+
+    // If the book wasn't in savedBooks, push it
+    if (result.matchedCount === 0) {
+      await usersCollection.updateOne(
+        { _id: objectId },
+        { $push: { savedBooks: book } }
+      );
     }
+
+    return result;
+  } catch (error) {
+    console.error("Error updating progress:", error);
+    throw error;
+  }
 }
