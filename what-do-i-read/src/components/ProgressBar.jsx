@@ -79,7 +79,7 @@ const ProgressBar = ({ bookId, totalPages, initialProgress = 0, onProgressChange
         fontSize: '14px'
       }}>
         <input
-          type="number"
+          type="text"
           value={inputValue}
           onChange={handleInputChange}
           onBlur={handleInputBlur}
