@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 import { getAnonymousUser } from "../auth";
 import StarRating from "../components/StarRating";
+import ProgressBar from "../components/ProgressBar";
 
 export default function BookDetails(){
   const { bookId } = useParams();
-  const { saved, setProgress, playlists, addToPlaylist, removeFromPlaylist, toggleSave } = useLibrary();
+  const { saved, playlists, addToPlaylist, removeFromPlaylist, toggleSave } = useLibrary();
   const [book, setBook] = useState(null);
   const isSaved = !!saved[bookId];
   const progress = saved[bookId]?.progress ?? 0;
@@ -30,10 +31,12 @@ export default function BookDetails(){
     fetchBook();
   }, [bookId]);
 
-  if (!book) return <div>Not found.</div>;
+  const handleProgressChange = (bookId, newProgress) => {
+    // This callback can be used to update the LibraryContext if needed
+    console.log(`Progress updated for book ${bookId}: ${newProgress} pages`);
+  };
 
-  // Calculate percentage based on pages, not the raw progress value
-  const percentage = book.pages > 0 ? Math.round((progress / book.pages) * 100) : 0;
+  if (!book) return <div>Not found.</div>;
 
   return (
     <>
@@ -65,18 +68,14 @@ export default function BookDetails(){
               </div>
             )}
             <div className="sep" />
-            <div className="label">Reading Progress</div>
-            <input 
-              type="range" 
-              min="0" 
-              max={book.pages} 
-              value={progress}
-              onChange={(e) => setProgress(book.id, Number(e.target.value))}
-              style={{width:"100%"}}
+            
+            {/* Custom Progress Bar Component */}
+            <ProgressBar 
+              bookId={book.id}
+              totalPages={book.pages}
+              initialProgress={progress}
+              onProgressChange={handleProgressChange}
             />
-            <div className="row">
-              <div className="pill">{progress} of {book.pages} pages</div>
-            </div>
 
             <div className="sep" />
             <div className="label">Library</div>

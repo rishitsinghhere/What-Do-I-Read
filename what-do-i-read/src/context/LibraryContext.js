@@ -216,38 +216,41 @@ export function LibraryProvider({ children }) {
   };
 
   const setProgress = async (bookId, value) => {
-  console.log("setProgress called:", { bookId, value, userId: user?._id });
+    console.log("setProgress called:", { bookId, value, userId: user?._id });
 
-  if (!user) {
-    alert("Please log in to track your reading progress.");
-    return;
-  }
+    if (!user) {
+      alert("Please log in to track your reading progress.");
+      return;
+    }
 
-  // Prepare updated book object
-  const updatedBook = {
-    ...(saved[bookId] || { bookId }),
-    progress: value,
-    addedAt: saved[bookId]?.addedAt || Date.now(),
+    // Prepare updated book object
+    const updatedBook = {
+      ...(saved[bookId] || { bookId }),
+      progress: value,
+      addedAt: saved[bookId]?.addedAt || Date.now(),
+    };
+
+    // Store previous state for potential rollback
+    const previousSaved = { ...saved };
+
+    // Update local state first for UI feedback
+    setSaved(prev => ({
+      ...prev,
+      [bookId]: updatedBook,
+    }));
+
+    console.log("Updated local state, now updating database with:", updatedBook);
+
+    // Update only that book in DB
+    try {
+      const result = await updateUserSavedBooks(user._id, updatedBook);
+      console.log("Progress updated successfully in database:", result);
+    } catch (error) {
+      console.error("Error updating progress in database:", error);
+      // Revert to previous state on error
+      setSaved(previousSaved);
+    }
   };
-
-  // Update local state first for UI feedback
-  setSaved(prev => ({
-    ...prev,
-    [bookId]: updatedBook,
-  }));
-
-  console.log("Updated local state, now updating database with:", updatedBook);
-
-  // Update only that book in DB
-  try {
-    const result = await updateUserSavedBooks(user._id, updatedBook);
-    console.log("Progress updated successfully in database:", result);
-  } catch (error) {
-    console.error("Error updating progress in database:", error);
-    // Optionally revert local state if needed
-    setSaved(saved);
-  }
-};
 
 
   const value = useMemo(
