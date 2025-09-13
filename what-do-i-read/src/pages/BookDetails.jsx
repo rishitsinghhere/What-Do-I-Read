@@ -68,14 +68,6 @@ export default function BookDetails(){
           </div>
         )}
         <div className="sep" />
-        <div className="label">Reading Progress</div>
-        <input type="range" min="0" max={book.pages} value={progress}
-          onChange={(e)=>setProgress(book.id, Number(e.target.value))}
-          style={{width:"100%"}}
-        />
-        <div className="row"><div className="pill">{percent} pages read</div></div>
-
-        <div className="sep" />
         <div className="label">Library</div>
         <div className="row">
           {playlists.filter(pl => pl.name !== "Saved").map(pl=>{
