@@ -170,31 +170,75 @@ export async function updateUserPlaylists(userId, playlists) {
     }
 }
 
-export async function updateUserSavedBooks(userId, book) {
-  try {
-    await authenticateAnonymously();
-    const usersCollection = getUsersCollection();
+export async function updateUserSavedBooks(userId, bookData, operation = "add") {
+    try {
+        await authenticateAnonymously();
+        const usersCollection = getUsersCollection();
 
-    // Ensure _id is treated as ObjectId
-    const objectId = typeof userId === "string" ? new BSON.ObjectId(userId) : userId;
+        // Ensure _id is treated as ObjectId
+        const objectId = typeof userId === "string" ? new BSON.ObjectId(userId) : userId;
 
-    // Try to update progress if the book already exists
-    const result = await usersCollection.updateOne(
-      { _id: objectId, "savedBooks.bookId": book.bookId },
-      { $set: { "savedBooks.$.progress": book.progress } }
-    );
+        let result;
 
-    // If the book wasn't in savedBooks, push it
-    if (result.matchedCount === 0) {
-      await usersCollection.updateOne(
-        { _id: objectId },
-        { $push: { savedBooks: book } }
-      );
+        switch (operation) {
+            case "add":
+                // Add new book - use $addToSet to prevent duplicates
+                result = await usersCollection.updateOne(
+                    { _id: objectId },
+                    { $addToSet: { savedBooks: bookData } }
+                );
+                break;
+
+            case "remove":
+                // Remove book by bookId
+                result = await usersCollection.updateOne(
+                    { _id: objectId },
+                    { $pull: { savedBooks: { bookId: bookData } } }
+                );
+                break;
+
+            case "updateProgress":
+                // Update progress if book exists, otherwise add it
+                result = await usersCollection.updateOne(
+                    { _id: objectId, "savedBooks.bookId": bookData.bookId },
+                    { 
+                        $set: { 
+                            "savedBooks.$.progress": bookData.progress,
+                            "savedBooks.$.addedAt": bookData.addedAt 
+                        } 
+                    }
+                );
+
+                // If the book wasn't found in savedBooks, add it
+                if (result.matchedCount === 0) {
+                    result = await usersCollection.updateOne(
+                        { _id: objectId },
+                        { $addToSet: { savedBooks: bookData } }
+                    );
+                }
+                break;
+
+            default:
+                throw new Error("Invalid operation. Use 'add', 'remove', or 'updateProgress'");
+        }
+
+        return result;
+    } catch (error) {
+        console.error("Error updating saved books:", error);
+        throw error;
     }
+}
 
-    return result;
-  } catch (error) {
-    console.error("Error updating progress:", error);
-    throw error;
-  }
+export async function getUserById(userId) {
+    try {
+        await authenticateAnonymously();
+        const usersCollection = getUsersCollection();
+        const objectId = typeof userId === "string" ? new BSON.ObjectId(userId) : userId;
+        
+        const user = await usersCollection.findOne({ _id: objectId });
+        return user;
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        throw error;
+    }
 }

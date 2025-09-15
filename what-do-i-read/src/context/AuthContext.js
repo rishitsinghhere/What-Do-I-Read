@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
   const logout = () => setUser(null);
 
   const value = useMemo(
-    () => ({ user, login, register, updateProfile, logout }),
+    () => ({ user, setUser, login, register, updateProfile, logout }), // Added setUser to the context
     [user]
   );
   
