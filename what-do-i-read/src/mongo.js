@@ -242,3 +242,51 @@ export async function getUserById(userId) {
         throw error;
     }
 }
+
+// ===== NOTES COLLECTION =====
+export function getNotesCollection() {
+  const mongo = app.currentUser.mongoClient("mongodb-atlas");
+  return mongo.db("What-Do-I-Read").collection("bookNotes");
+}
+
+export async function createBookNote(note) {
+  try {
+    await authenticateAnonymously();
+    const notesCollection = getNotesCollection();
+    const result = await notesCollection.insertOne(note);
+    return { ...note, _id: result.insertedId };
+  } catch (error) {
+    console.error("Error creating note:", error);
+    throw error;
+  }
+}
+
+export async function updateBookNote(noteId, updates) {
+  try {
+    await authenticateAnonymously();
+    const notesCollection = getNotesCollection();
+    const objectId = typeof noteId === "string" ? new BSON.ObjectId(noteId) : noteId;
+
+    const result = await notesCollection.updateOne(
+      { _id: objectId },
+      { $set: updates }
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error updating note:", error);
+    throw error;
+  }
+}
+
+export async function getNotesByBook(bookId, userId) {
+  try {
+    await authenticateAnonymously();
+    const notesCollection = getNotesCollection();
+    const notes = await notesCollection.find({ bookId, userId });
+    return notes;
+  } catch (error) {
+    console.error("Error fetching notes:", error);
+    throw error;
+  }
+}
