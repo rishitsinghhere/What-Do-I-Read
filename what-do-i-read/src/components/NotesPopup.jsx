@@ -86,7 +86,7 @@ export default function NotesPopup({
         {error && <div className="notes-error">{error}</div>}
 
         <div className="form-row">
-          <div className="label">Page Number</div>
+          <div className="label" style = {{marginBottom:"10px"}}>Page Number</div>
           <input
             className="input"
             type="number"
@@ -102,23 +102,23 @@ export default function NotesPopup({
         </div>
 
         <div className="form-row">
-          <div className="label">Description</div>
+          <div className="label" style = {{marginBottom:"10px"}}>Description</div>
           <textarea
             className="input"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter your note..."
             rows="4"
-            style={{ resize: "vertical", minHeight: "80px" }}
+            style={{ resize: "none", minHeight: "80px", overflow: "hidden" }}
           />
         </div>
 
         <div className="row" style={{ justifyContent: "flex-end", gap: "12px" }}>
-          <button className="btn" onClick={onClose} disabled={isLoading}>
+          <button className="btn" style={{marginTop: "15px"}} onClick={onClose} disabled={isLoading}>
             Cancel
           </button>
           <button
-            className="btn primary"
+            className="btn primary" style={{marginTop: "15px"}}
             onClick={handleSave}
             disabled={isLoading || !page || !description.trim()}
           >

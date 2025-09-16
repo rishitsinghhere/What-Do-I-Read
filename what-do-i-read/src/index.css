@@ -659,7 +659,10 @@ background: rgb(54, 53, 53);
   box-shadow: var(--shadow);
   color: var(--text);
   max-height: 80vh;
-  overflow-y: auto;
+  overflow:hidden;
+
+  
+
 }
 
 .notes-error {
