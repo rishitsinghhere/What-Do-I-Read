@@ -290,3 +290,15 @@ export async function getNotesByBook(bookId, userId) {
     throw error;
   }
 }
+
+export async function deleteBookNote(noteId) {
+    try {
+        await authenticateAnonymously();
+        const notesCollection = getNotesCollection();
+        
+        const result = await notesCollection.deleteOne({ _id: noteId });
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}

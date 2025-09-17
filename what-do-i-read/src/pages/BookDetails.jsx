@@ -7,7 +7,7 @@ import StarRating from "../components/StarRating";
 import NotesPopup from "../components/NotesPopup";
 import NotesCard from "../components/NotesCard";
 import { useAuth } from "../context/AuthContext";
-import { getNotesByBook } from "../mongo";
+import { getNotesByBook, deleteBookNote } from "../mongo";
 
 export default function BookDetails() {
   const { bookId } = useParams();
@@ -19,6 +19,7 @@ export default function BookDetails() {
   const [notes, setNotes] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [editNote, setEditNote] = useState(null);
+  const [isDeletingNote, setIsDeletingNote] = useState(null);
 
   const isSaved = !!saved[bookId];
   const progress = saved[bookId]?.progress ?? 0;
@@ -41,9 +42,10 @@ export default function BookDetails() {
       if (!user?._id) return;
       try {
         const fetchedNotes = await getNotesByBook(bookId, user._id);
-        setNotes(fetchedNotes);
+        setNotes(fetchedNotes || []);
       } catch (err) {
         console.error("Error loading notes:", err);
+        setNotes([]);
       }
     }
     fetchNotes();
@@ -57,7 +59,7 @@ export default function BookDetails() {
       if (editNote) {
         return prev.map((n) => (n._id === editNote._id ? { ...n, ...note } : n));
       }
-      return [...prev, note];
+      return [...prev, note].sort((a, b) => a.page - b.page);
     });
     setEditNote(null);
   };
@@ -65,6 +67,20 @@ export default function BookDetails() {
   const handleCardClick = (note) => {
     setEditNote(note);
     setIsPopupOpen(true);
+  };
+
+  const handleDeleteNote = async (noteId) => {
+    setIsDeletingNote(noteId);
+    try {
+      await deleteBookNote(noteId);
+      setNotes(prev => prev.filter(note => note._id !== noteId));
+      console.log("Note deleted successfully");
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      alert("Failed to delete note. Please try again.");
+    } finally {
+      setIsDeletingNote(null);
+    }
   };
 
   return (
@@ -151,18 +167,43 @@ export default function BookDetails() {
         </div>
 
         {/* Notes grid */}
-        {notes.length > 0 && (
-          <div
-            className="grid"
-            style={{
-              marginTop: "20px",
-              gridTemplateColumns: "repeat(auto-fill, 200px)",
-              gap: "16px",
-            }}
-          >
-            {notes.map((note) => (
-              <NotesCard key={note._id} note={note} onClick={handleCardClick} />
-            ))}
+        {user && (
+          <div style={{ marginTop: "20px" }}>
+            <h3 style={{ margin: "10px 0 14px 0" }}>My Notes</h3>
+            {notes.length > 0 ? (
+              <div
+                className="grid"
+                style={{
+                  gridTemplateColumns: "repeat(auto-fill, 200px)",
+                  gap: "16px",
+                }}
+              >
+                {notes.map((note) => (
+                  <div 
+                    key={note._id} 
+                    style={{ 
+                      opacity: isDeletingNote === note._id ? 0.5 : 1,
+                      pointerEvents: isDeletingNote === note._id ? 'none' : 'auto'
+                    }}
+                  >
+                    <NotesCard 
+                      note={note} 
+                      onClick={handleCardClick}
+                      onDelete={handleDeleteNote}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{
+                textAlign: "center",
+                padding: "40px 20px",
+                color: "var(--muted)"
+              }}>
+                <p>No notes yet for this book.</p>
+                <p>Click "Add Note" to get started!</p>
+              </div>
+            )}
           </div>
         )}
       </div>

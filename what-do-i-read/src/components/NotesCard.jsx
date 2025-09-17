@@ -1,10 +1,19 @@
-export default function NoteCard({ note, onClick }) {
+import { FaTrash } from "react-icons/fa";
+
+export default function NoteCard({ note, onClick, onDelete }) {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric"
     });
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    if (window.confirm("Are you sure you want to delete this note?")) {
+      onDelete(note._id);
+    }
   };
 
   return (
@@ -19,7 +28,8 @@ export default function NoteCard({ note, onClick }) {
         flexDirection: "column",
         justifyContent: "space-between",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
-        border: "1px solid var(--border, #e1e5e9)"
+        border: "1px solid var(--border, #e1e5e9)",
+        position: "relative"
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
@@ -30,8 +40,38 @@ export default function NoteCard({ note, onClick }) {
         e.currentTarget.style.boxShadow = "none";
       }}
     >
+      {/* Delete Button */}
+      <button
+        onClick={handleDelete}
+        style={{
+          position: "absolute",
+          top: "8px",
+          right: "8px",
+          background: "var(--danger, #dc3545)",
+          border: "none",
+          borderRadius: "4px",
+          width: "24px",
+          height: "24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          opacity: 0.8,
+          transition: "opacity 0.2s ease"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.opacity = "1";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.opacity = "0.8";
+        }}
+        title="Delete Note"
+      >
+        <FaTrash size={10} color="white" />
+      </button>
+
       <div>
-        <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+        <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: "8px", marginRight: "30px" }}>
           <div 
             className="pill" 
             style={{ 
