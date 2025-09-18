@@ -1,8 +1,7 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
-import { FaUserCircle } from "react-icons/fa"; // profile icon
-
+import { FaUserCircle, FaSearch } from "react-icons/fa"; // Added search icon
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -27,22 +26,26 @@ export default function Navbar() {
             Genres
           </NavLink>
           <span>|</span>
+        
+          <NavLink to="/search" className={({ isActive }) => (isActive ? "active" : "")}>
+            <FaSearch className="nav-icon" />
+          </NavLink>
+          <span>|</span>
           <NavLink to="/about" className={({ isActive }) => (isActive ? "active" : "")}>
             About
           </NavLink>
         </div>
 
-      {/* CENTER TITLE WITH FAVICON + GRADIENT ANIMATION */}
-         <div className="brand">
-            <img src="/Media/What-Do-I-Read-Logo.png" alt="logo" className="favicon" />
+        {/* CENTER TITLE WITH FAVICON + GRADIENT ANIMATION */}
+        <div className="brand">
+          <img src="/Media/What-Do-I-Read-Logo.png" alt="logo" className="favicon" />
         </div>
-
 
         {/* RIGHT SIDE USER */}
         <div className="row user-actions">
           {user ? (
             <>
-              <FaUserCircle className="profile-icon"  onClick={() => nav("/profile")} />
+              <FaUserCircle className="profile-icon" onClick={() => nav("/profile")} />
               <div className="pill">{user.name}</div>
               <button className="btn ghost" onClick={logout}>
                 Logout

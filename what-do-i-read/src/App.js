@@ -9,6 +9,7 @@ import BookDetails from "./pages/BookDetails";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
+import Search from "./pages/Search"; // ✅ New Search Page
 import NotFound from "./pages/NotFound";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { LibraryProvider } from "./context/LibraryContext";
@@ -42,6 +43,7 @@ export default function App() {
               <Route path="/select-genres" element={<Page><SelectGenres /></Page>} />
               <Route path="/books/:genreId" element={<Page><Books /></Page>} />
               <Route path="/book/:bookId" element={<Page><BookDetails /></Page>} />
+              <Route path="/search" element={<Page><Search /></Page>} /> {/* ✅ New Search Route */}
               <Route path="/profile" element={<Private><Page><Profile /></Page></Private>} />
               <Route path="/about" element={<Page><About /></Page>} />
               <Route path="/auth" element={<Page><Auth /></Page>} />
