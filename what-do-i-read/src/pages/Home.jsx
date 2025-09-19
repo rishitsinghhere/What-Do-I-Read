@@ -151,12 +151,13 @@ export default function Home() {
       <div className="step-card">
         <div className="step-number">2</div>
         <h3>Explore & Save</h3>
-        <p>Browse books, build custom libraries, and mark progress.</p>
+        <p>Browse books, build custom libraries</p>
       </div>
       <div className="step-card">
         <div className="step-number">3</div>
-        <h3>Track Your Journey</h3>
-        <p>See your reading history & pages read.</p>
+        <h3>Create Notes</h3>
+        <p>
+          Capture thoughts & insights from every book</p>
       </div>
     </div>
 
@@ -169,8 +170,10 @@ export default function Home() {
             <p>Save books into collections that match your vibe.</p>
           </div>
           <div className="feature-card">
-            <h3>Smart Progress</h3>
-            <p>Track pages read & completed books.</p>
+            <h3>Smart Notes</h3>
+            <p>
+            Add personal notes & track your reading thoughts.
+            </p>
           </div>
           <div className="feature-card">
             <h3>Genre Library</h3>

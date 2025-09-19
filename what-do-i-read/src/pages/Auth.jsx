@@ -147,8 +147,10 @@ export default function Auth(){
             <p>Save books into libraries that match your vibe.</p>
           </div>
            <div className="feature-card" style ={{  background: "rgba(255, 255, 255, 0.05)", marginBottom: "20px"}}>
-            <h3>Smart Progress</h3>
-            <p>Track pages read & completed books</p>
+            <h3>Smart Notes</h3>
+            <p>
+            Add personal notes & track your reading thoughts.
+            </p>
           </div>
       
           
