@@ -82,29 +82,26 @@ export default function Home() {
       <div className="container-home">
         
         {/* TITLE */}
+    
+
+
+ 
         <div className="home-title">
           <h1>What Do I Read ?</h1>
+
           <p className="subtitle">
             Your personalized gateway to new books, genres, and reading journeys.
           </p>
-        </div>
-
-        {/* HERO PANEL */}
-        <div className="hero">
-        <div className="hero-panel">
-            <h2>Start Your Journey</h2>
-            <p>
-              Pick a genre, explore hand-picked books and series, save them into
-              libraries, and track your progress as you read.
-            </p>
-            <button 
+          
+    
+           <button 
               className="btn primary" 
               onClick={() => nav("/select-genres")}
             >
               Select Genres
             </button>
-           </div>
         </div>
+
 
         {/* TRENDING PICKS */}
         <h2 className="label">Trending Picks</h2>

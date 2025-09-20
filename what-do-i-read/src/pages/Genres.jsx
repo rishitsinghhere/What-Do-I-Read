@@ -36,7 +36,7 @@ export default function Genres() {
     <>
       <div class="container-genres">
 
-      <h2 style={{ margin: "10px 0 14px" }}>Genres</h2>
+      <h1 style={{ margin: "10px 523px 40px" }}>Genres</h1>
 
       {/* Genres grid */}
       <div className="grid grid-4" style={{ marginBottom: 30 }}>

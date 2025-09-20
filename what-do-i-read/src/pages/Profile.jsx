@@ -78,7 +78,7 @@ export default function Profile() {
       <h2 style={{ margin: "10px 0 14px 10px" }}>Profile</h2>
       <div className="grid grid-2">
         {/* Profile card */}
-        <div className="card" style={{ padding: 16 }}>
+        <div className="profile-card" style={{ padding: 16 }}>
           <div>
             {message && (
               <div
@@ -139,7 +139,7 @@ export default function Profile() {
         </div>
 
         {/* Saved Books */}
-        <div className="card" style={{ padding: 16 }}>
+        <div className="profile-card" style={{ padding: 16 }}>
           <h3 style={{ margin: 0 }}>Saved Books</h3>
           <div className="row" style={{ marginTop: 12 }}>
             <div className="list-h-profile" style={{ marginTop: 10}}>
@@ -157,7 +157,7 @@ export default function Profile() {
       </div>
 
       {/* Playlists */}
-      <div className="card" />
+      <div className="profile-card" />
       <div
         className="row"
         style={{
@@ -182,7 +182,7 @@ export default function Profile() {
       {playlists.filter(pl => pl.name !== "Saved").map((pl) => (
         <div
           key={pl.id}
-          className="card"
+          className="profile-card"
           style={{ padding: 14, marginTop: 12 }}
         >
           <div className="row" style={{ justifyContent: "space-between" }}>

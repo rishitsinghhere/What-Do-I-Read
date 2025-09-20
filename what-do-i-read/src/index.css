@@ -37,13 +37,15 @@ html {
   z-index: -1;       /* push it behind everything */
 }
 
+
+
 .video-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* adjust 0.5 for darkness */
+  background: rgba(0, 0, 0, 0.42); /* adjust 0.5 for darkness */
   z-index: -1; /* sits above video but below content */
 } 
 
@@ -73,13 +75,18 @@ button, input, select, textarea {
   padding: 20px 20px;   /* optional: space from edges on smaller screens */
 }
 
-
-
-.container-genres,.container-bookdetails,.container-selectgenres,.container-books,.container-profile,.container-auth{
-  max-width: 1200px; /* or whatever you prefer */
+.container-auth{
+  max-width: 1000px;
+  padding: 150px 15px; 
   margin-left: auto;
   margin-right: auto;
-  padding: 160px 20px;   /* optional: space from edges on smaller screens */
+}
+
+.container-genres,.container-bookdetails,.container-selectgenres,.container-books,.container-profile{
+  max-width: 1200px; 
+  padding: 150px 15px; 
+  margin-left: auto;
+  margin-right: auto;
 }
 
 
@@ -88,8 +95,8 @@ button, input, select, textarea {
   max-width: 1100px; /* or whatever you prefer */
   margin-left: auto;
   margin-right: auto;
-  margin-top: 30px;
-  padding: 160px 20px;
+  margin-top: 10px;
+  padding: 85px 20px;
 }
 
 .dev-grid {
@@ -100,7 +107,7 @@ button, input, select, textarea {
 }
 
 .dev-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6));
   padding: 16px;
   border-radius: 12px;
   text-align: center;
@@ -124,23 +131,25 @@ button, input, select, textarea {
 
 .home-title {
   text-align: center;
-  margin-top: 200px;
+  margin-top: 230px;
+  margin-bottom: 250px;
 }
 
 .home-title h1 {
-  font-size: 56px;
-  font-weight: 800;
+  font-size: 60px;
+  font-weight: 700;
   margin: 0;
   color: #fff;
   text-shadow: 0 3px 12px rgba(0,0,0,0.9);
 }
 
 .subtitle {
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 400;
   color: #f5f5f7;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); /* glow for readability */
   max-width: 800px;
-  margin: 12px auto 0;
+  margin: 8px auto 0;
   line-height: 1.5;
 }
 
@@ -151,7 +160,7 @@ button, input, select, textarea {
 
 .features-grid {
   display: grid;
-  gap: 30px;
+  gap: 20px;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   margin-top: 10px;
   margin-bottom: 100px;
@@ -222,12 +231,12 @@ genre-card:hover{
 
 .grid {
   display: grid;
-  gap: 50px;
+  gap: 30px;
 }
 
 /* Auto-fit for responsiveness, max 6 columns for grid-4 */
 .grid-4 {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* FROM: 180px */
 }
 
 
@@ -249,6 +258,13 @@ genre-card:hover{
   overflow: hidden;
 }
 
+.profile-card{
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.80), rgba(0,0,0,0.4));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
 .card img:hover {
   transform: scale(1.05); /* slightly zoom in */
 }
@@ -257,8 +273,8 @@ genre-card:hover{
 /* NAVBAR */
 .nav {
   position: fixed;
-  top: 40px;
-  left: 60px;
+  top: 20px; /* FROM: 40px */
+  left: 60px; /* FROM: 60px */
   right: 60px;
   border-radius: 40px;
   z-index: 1500;
@@ -291,6 +307,7 @@ genre-card:hover{
 
 /* Left links */
 .nav-links {
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -334,6 +351,7 @@ genre-card:hover{
 }
 
 .favicon {
+  height: 80px; 
   height: 125px;
   width: 125px;
   animation: floatLogo 4s ease-in-out infinite;
@@ -377,7 +395,8 @@ genre-card:hover{
   background-color: transparent;
   border: 1px solid white;
   border-radius: 40px;
-  padding: 10px;
+  padding: 8px 16px; /* FROM: 10px */
+  font-size: 13px; /* Added */
 }
 
 .btn-clear, .clear-search-btn{
@@ -393,11 +412,16 @@ genre-card:hover{
 }
 
 
-.btn-clear,.clear-search-btn:hover{
+.btn-clear:hover{
   padding : 10px 30px;
   box-shadow: 0 6px 20px rgb(125, 17, 0);
 }
 
+
+.clear-search-btn:hover{
+  padding : 10px 30px;
+  box-shadow: 0 6px 20px rgb(125, 17, 0);
+}
 
 .btn:hover {   transform: scale(1.05);}
 
@@ -439,64 +463,27 @@ genre-card:hover{
 
 .hero p { color: var(--muted); margin: 8px 0 18px }
 
-.hero-panel {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-
-  height: 270px; /* full screen hero */
-  padding: 20px;
-  border-radius: var(--radius);
-
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6));
-  background-size: 100% 100%;
-
-  overflow: hidden;
-  position: relative;
-}
-
-.hero-panel h2 {
-  font-size: 42px;
-  font-weight: 800;
-  margin-top: 0px;
-  margin-bottom: 4px;
-  text-shadow: 0 4px 10px rgba(0,0,0,0.9);
-  color: #fff;
-
-}
-
-.hero-panel p {
-  color: #d1d5db;
-  font-size: 18px;
-  line-height: 1.8;
-}
 
 /* Button styling */
-.hero-panel .btn.primary {
-  background: linear-gradient(135deg, #ffea00, #cc5200);
-  color: white;
+.home-title .btn.primary {
+  background: linear-gradient(270deg,  #533800,#c2a460, #81551b);
+  background-size: 600% 600%;
+  color:white;
   font-size: 25px;
   font-weight: 600;
-  padding: 14px 100px;
+  padding: 14px 80px;
   border: none;
   border-radius: 50px;
   cursor: pointer;
 
-  box-shadow: 0 6px 20px rgb(252, 211, 47);
   transition: all 0.3s ease;
+  animation: gradientShift 5s ease infinite;
 
-
-  transform: scale(0.6);
-  animation: fadeScaleIn 1s ease forwards;
-  animation-delay: 1s;
+  transform: scale(0.5);
 }
 
-.hero-panel .btn.primary:hover {
-  transform: scale(0.8);
-  box-shadow: 0 8px 30px rgb(255, 106, 0);
+.home-title .btn.primary:hover {
+  transform: scale(0.6);
 }
 
 
@@ -589,7 +576,7 @@ background: rgb(54, 53, 53);
   color: var(--text);
 }
 .select { padding: 10px; border-radius: 10px; background: #0c0c12; border: 1px solid var(--border) }
-.label { font-size: 20px;  margin-top: 50px ;margin-left: 20px; margin-bottom: 20px;}
+.label { font-size: 16px;  margin-top: 50px ;margin-left: 20px; margin-bottom: 20px;}
 
 
 .form-row .label {  margin-top: 25px}
@@ -635,7 +622,7 @@ background: rgb(54, 53, 53);
 
 .series-section {
   margin: 30px 0px;
-  padding: 15px;
+  padding: 30px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
@@ -693,7 +680,7 @@ background: rgb(54, 53, 53);
 .search-page {
   padding: 2rem 0;
   max-width: 1200px;
-  margin: 130px auto;
+  margin: 100px auto;
   min-height: 80vh;
 }
 
@@ -840,6 +827,7 @@ background: rgb(54, 53, 53);
 button, input, select {
   transition: all 0.2s ease;
 }
+
 
 
 

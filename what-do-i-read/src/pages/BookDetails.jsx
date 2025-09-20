@@ -196,9 +196,13 @@ export default function BookDetails() {
               </div>
             ) : (
               <div style={{
+                 maxWidth :"300px", background: "rgba(0,0,0,0.5)",
                 textAlign: "center",
                 padding: "40px 20px",
-                color: "var(--muted)"
+                color: "white",
+                border:"none",
+                borderRadius:"20px",
+                marginLeft:"450px"
               }}>
                 <p>No notes yet for this book.</p>
                 <p>Click "Add Note" to get started!</p>

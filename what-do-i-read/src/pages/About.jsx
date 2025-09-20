@@ -11,14 +11,12 @@ export default function About() {
       
       {/* Section: About Us */}
       <div
-        className="card"
         style={{
           padding: 18,
-          marginTop: 20,
-          background: "linear-gradient(180deg, rgba(0,0,0,0.6))",
+          marginTop: 20
         }}
       >
-        <h2 style={{ marginBottom: 16 }}>About Us</h2>
+        <h2 style={{ marginBottom: 30 }}>About Us</h2>
 
         <div className="dev-grid">
           {/* Rishit's Card */}
