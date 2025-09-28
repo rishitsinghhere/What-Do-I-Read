@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import { useLibrary } from "../context/LibraryContext";
 import { createBookNote, updateBookNote } from "../mongo";
 
+// NOTES POPUP COMPONENT - Modal for creating and editing book notes
+
 export default function NotesPopup({ 
   isOpen, 
   onClose, 
@@ -57,14 +59,12 @@ export default function NotesPopup({
       let savedNote;
       
       if (editNote) {
-        // Update existing note
         savedNote = await updateBookNote(editNote._id, {
           page: pageNumber,
           description: description.trim(),
           updatedAt: new Date()
         });
       } else {
-        // Create new note
         savedNote = await createBookNote({
           bookId,
           userId: user._id,
@@ -73,7 +73,6 @@ export default function NotesPopup({
           createdAt: new Date()
         });
 
-        // Auto-save the book if it's not already saved
         const isBookSaved = !!saved[bookId];
         if (!isBookSaved) {
           try {
@@ -81,7 +80,6 @@ export default function NotesPopup({
             console.log("Book automatically saved when creating note");
           } catch (error) {
             console.error("Error auto-saving book:", error);
-            // Don't fail the note creation if book save fails
           }
         }
       }
@@ -99,12 +97,15 @@ export default function NotesPopup({
   return (
     <div className="notes-modal" onClick={onClose}>
       <div className="notes-panel" onClick={(e) => e.stopPropagation()}>
+        {/* Modal Header */}
         <h3>{editNote ? "Edit Note" : "Add Note"}</h3>
 
+        {/* Error Message */}
         {error && <div className="notes-error">{error}</div>}
 
+        {/* Page Number Input */}
         <div className="form-row">
-          <div className="label" style={{marginBottom:"10px"}}>Page Number</div>
+          <div className="label notes-form-label">Page Number</div>
           <input
             className="input"
             type="number"
@@ -114,30 +115,30 @@ export default function NotesPopup({
             onChange={(e) => setPage(e.target.value)}
             placeholder={`Enter page (1-${totalPages})`}
           />
-          <small style={{ color: "var(--muted)", fontSize: "12px" }}>
+          <small className="notes-page-info">
             Book has {totalPages} pages
           </small>
         </div>
 
+        {/* Description Input */}
         <div className="form-row">
-          <div className="label" style={{marginBottom:"10px"}}>Description</div>
+          <div className="label notes-form-label">Description</div>
           <textarea
-            className="input"
+            className="input notes-textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter your note..."
             rows="4"
-            style={{ resize: "none", minHeight: "80px", overflow: "hidden" }}
           />
         </div>
 
-        <div className="row" style={{ justifyContent: "flex-end", gap: "12px" }}>
-          <button className="btn" style={{marginTop: "15px"}} onClick={onClose} disabled={isLoading}>
+        {/* Action Buttons */}
+        <div className="row notes-buttons">
+          <button className="btn notes-btn" onClick={onClose} disabled={isLoading}>
             Cancel
           </button>
           <button
-            className="btn primary" 
-            style={{marginTop: "15px"}}
+            className="btn primary notes-btn"
             onClick={handleSave}
             disabled={isLoading || !page || !description.trim()}
           >

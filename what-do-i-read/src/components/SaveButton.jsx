@@ -1,12 +1,12 @@
 import { useLibrary } from "../context/LibraryContext";
-import { useAuth } from "../context/AuthContext"; // Import useAuth
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { FaBookmark, FaRegBookmark } from "react-icons/fa"; // solid + outline icons
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa"; 
 
 export default function SaveButton({ bookId, isSaved }) {
   const { toggleSave } = useLibrary();
-  const { user } = useAuth(); // Get the user from the AuthContext
-  const navigate = useNavigate(); // Get the navigate function for redirection
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleSaveClick = () => {
     if (user) {
@@ -22,7 +22,7 @@ export default function SaveButton({ bookId, isSaved }) {
   return (
     <button
       className="btn-icon"
-      onClick={handleSaveClick} // Use the new conditional handler
+      onClick={handleSaveClick}
       title={isSaved ? "Remove from Saved" : "Save"}
     >
       {isSaved ? (

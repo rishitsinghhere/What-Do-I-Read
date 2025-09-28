@@ -1,7 +1,7 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
-import { FaUserCircle, FaSearch } from "react-icons/fa"; // Added search icon
+import { FaUserCircle, FaSearch } from "react-icons/fa";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -16,7 +16,7 @@ export default function Navbar() {
       transition={{ duration: 0.6 }}
     >
       <div className="nav-inner container">
-        {/* LEFT SIDE LINKS */}
+        {/* Left Links */}
         <div className="nav-links">
           <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>
             Home
@@ -26,7 +26,6 @@ export default function Navbar() {
             Genres
           </NavLink>
           <span>|</span>
-        
           <NavLink to="/search" className={({ isActive }) => (isActive ? "active" : "")}>
             <FaSearch className="nav-icon" />
           </NavLink>
@@ -36,12 +35,12 @@ export default function Navbar() {
           </NavLink>
         </div>
 
-        {/* CENTER TITLE WITH FAVICON + GRADIENT ANIMATION */}
+        {/* Center Brand */}
         <div className="brand">
           <img src="/Media/What-Do-I-Read-Logo.png" alt="logo" className="favicon" />
         </div>
 
-        {/* RIGHT SIDE USER */}
+        {/* Right User Section */}
         <div className="row user-actions">
           {user ? (
             <>
