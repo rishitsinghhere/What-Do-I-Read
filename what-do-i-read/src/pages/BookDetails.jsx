@@ -9,10 +9,12 @@ import NotesCard from "../components/NotesCard";
 import { useAuth } from "../context/AuthContext";
 import { getNotesByBook, deleteBookNote } from "../mongo";
 
+// BOOK DETAILS PAGE - Individual book information with notes and library management
+
 export default function BookDetails() {
   const { bookId } = useParams();
   const { user } = useAuth();
-  const { saved, setProgress, playlists, addToPlaylist, removeFromPlaylist, toggleSave } =
+  const { saved, playlists, addToPlaylist, removeFromPlaylist, toggleSave } =
     useLibrary();
 
   const [book, setBook] = useState(null);
@@ -22,7 +24,6 @@ export default function BookDetails() {
   const [isDeletingNote, setIsDeletingNote] = useState(null);
 
   const isSaved = !!saved[bookId];
-  const progress = saved[bookId]?.progress ?? 0;
 
   // Fetch book details
   useEffect(() => {
@@ -57,7 +58,9 @@ export default function BookDetails() {
   const handleNoteSaved = (note) => {
     setNotes((prev) => {
       if (editNote) {
-        return prev.map((n) => (n._id === editNote._id ? { ...n, ...note } : n));
+        return prev.map((n) =>
+          n._id === editNote._id ? { ...n, ...note } : n
+        );
       }
       return [...prev, note].sort((a, b) => a.page - b.page);
     });
@@ -73,7 +76,7 @@ export default function BookDetails() {
     setIsDeletingNote(noteId);
     try {
       await deleteBookNote(noteId);
-      setNotes(prev => prev.filter(note => note._id !== noteId));
+      setNotes((prev) => prev.filter((note) => note._id !== noteId));
       console.log("Note deleted successfully");
     } catch (error) {
       console.error("Error deleting note:", error);
@@ -85,6 +88,7 @@ export default function BookDetails() {
 
   return (
     <>
+      {/* Background Video */}
       <video autoPlay muted loop playsInline className="background-video">
         <source src="/Media/bgvideo3.mp4" type="video/mp4" />
         Your browser does not support HTML5 video.
@@ -92,17 +96,20 @@ export default function BookDetails() {
       <div className="video-overlay"></div>
 
       <div className="container-bookdetails">
-        <div className="grid" style={{ gridTemplateColumns: "320px 1fr", gap: 20 }}>
-          <div className="card" style={{ padding: 16 }}>
+        <div className="grid book-details-main-grid">
+          {/* Book Cover */}
+          <div className="card book-details-cover-card">
             <img
               src={book.cover}
               alt={book.title}
-              style={{ width: "100%", borderRadius: 12 }}
+              className="book-details-cover-image"
             />
           </div>
-          <div className="card" style={{ padding: 18 }}>
-            <div className="row" style={{ justifyContent: "space-between" }}>
-              <h2 style={{ margin: "6px 0 6px" }}>{book.title}</h2>
+
+          {/* Book Information */}
+          <div className="card book-details-info-card">
+            <div className="row book-details-header">
+              <h2 className="book-details-title">{book.title}</h2>
               <button
                 className={`btn-icon ${isSaved ? "saved" : "primary"}`}
                 onClick={() => toggleSave(book.id)}
@@ -114,16 +121,18 @@ export default function BookDetails() {
                 )}
               </button>
             </div>
+
             <div className="muted">
               {book.authors.join(", ")} • {book.pages} pages • {book.year}
             </div>
+
             {book.rating && (
-              <div style={{ marginTop: "18px" }}>
+              <div className="book-details-rating">
                 <StarRating rating={book.rating} />
               </div>
             )}
 
-            <div className="sep" />
+            <div className="book-details-separator" />
             <div className="label">Notes</div>
             <div className="row">
               <button
@@ -137,7 +146,7 @@ export default function BookDetails() {
               </button>
             </div>
 
-            <div className="sep" />
+            <div className="book-details-separator" />
             <div className="label">Library</div>
             <div className="row">
               {playlists
@@ -160,34 +169,27 @@ export default function BookDetails() {
                 })}
             </div>
 
-            <div className="sep" />
+            <div className="book-details-separator" />
             <div className="label">About this book</div>
             <p className="muted">{book.summary}</p>
           </div>
         </div>
 
-        {/* Notes grid */}
+        {/* Notes Section */}
         {user && (
-          <div style={{ marginTop: "20px" }}>
-            <h3 style={{ margin: "10px 0 14px 0" }}>My Notes</h3>
+          <div className="book-details-notes-section">
+            <h3 className="book-details-notes-title">My Notes</h3>
             {notes.length > 0 ? (
-              <div
-                className="grid"
-                style={{
-                  gridTemplateColumns: "repeat(auto-fill, 200px)",
-                  gap: "16px",
-                }}
-              >
+              <div className="grid book-details-notes-grid">
                 {notes.map((note) => (
-                  <div 
-                    key={note._id} 
-                    style={{ 
-                      opacity: isDeletingNote === note._id ? 0.5 : 1,
-                      pointerEvents: isDeletingNote === note._id ? 'none' : 'auto'
-                    }}
+                  <div
+                    key={note._id}
+                    className={`book-details-note-wrapper ${
+                      isDeletingNote === note._id ? "deleting" : ""
+                    }`}
                   >
-                    <NotesCard 
-                      note={note} 
+                    <NotesCard
+                      note={note}
                       onClick={handleCardClick}
                       onDelete={handleDeleteNote}
                     />
@@ -195,15 +197,7 @@ export default function BookDetails() {
                 ))}
               </div>
             ) : (
-              <div style={{
-                 maxWidth :"300px", background: "rgba(0,0,0,0.5)",
-                textAlign: "center",
-                padding: "40px 20px",
-                color: "white",
-                border:"none",
-                borderRadius:"20px",
-                marginLeft:"450px"
-              }}>
+              <div className="book-details-no-notes">
                 <p>No notes yet for this book.</p>
                 <p>Click "Add Note" to get started!</p>
               </div>
@@ -212,7 +206,7 @@ export default function BookDetails() {
         )}
       </div>
 
-      {/* Popup */}
+      {/* Notes Popup */}
       <NotesPopup
         isOpen={isPopupOpen}
         onClose={() => {

@@ -80,28 +80,20 @@ export default function Home() {
 
       {/* HOME CONTENT */}
       <div className="container-home">
-        
         {/* TITLE */}
-    
 
-
- 
         <div className="home-title">
           <h1>What Do I Read ?</h1>
 
           <p className="subtitle">
-            Your personalized gateway to new books, genres, and reading journeys.
+            Your personalized gateway to new books, genres, and reading
+            journeys.
           </p>
-          
-    
-           <button 
-              className="btn primary" 
-              onClick={() => nav("/select-genres")}
-            >
-              Select Genres
-            </button>
-        </div>
 
+          <button className="btn primary" onClick={() => nav("/select-genres")}>
+            Select Genres
+          </button>
+        </div>
 
         {/* TRENDING PICKS */}
         <h2 className="label">Trending Picks</h2>
@@ -137,27 +129,25 @@ export default function Home() {
           </div>
         </div>
 
-          {/* HOW IT WORKS */}
-    <h2 className="label">How It Works</h2>
-    <div className="steps-grid">
-      <div className="step-card">
-        <div className="step-number">1</div>
-        <h3>Pick Genres</h3>
-        <p>Select the genres you love or want to explore.</p>
-      </div>
-      <div className="step-card">
-        <div className="step-number">2</div>
-        <h3>Explore & Save</h3>
-        <p>Browse books, build custom libraries</p>
-      </div>
-      <div className="step-card">
-        <div className="step-number">3</div>
-        <h3>Create Notes</h3>
-        <p>
-          Capture thoughts & insights from every book</p>
-      </div>
-    </div>
-
+        {/* HOW IT WORKS */}
+        <h2 className="label">How It Works</h2>
+        <div className="steps-grid">
+          <div className="step-card">
+            <div className="step-number">1</div>
+            <h3>Pick Genres</h3>
+            <p>Select the genres you love or want to explore.</p>
+          </div>
+          <div className="step-card">
+            <div className="step-number">2</div>
+            <h3>Explore & Save</h3>
+            <p>Browse books, build custom libraries</p>
+          </div>
+          <div className="step-card">
+            <div className="step-number">3</div>
+            <h3>Create Notes</h3>
+            <p>Capture thoughts & insights from every book</p>
+          </div>
+        </div>
 
         {/* FEATURES */}
         <h2 className="label">Our Features</h2>
@@ -168,9 +158,7 @@ export default function Home() {
           </div>
           <div className="feature-card">
             <h3>Smart Notes</h3>
-            <p>
-            Add personal notes & track your reading thoughts.
-            </p>
+            <p>Add personal notes & track your reading thoughts.</p>
           </div>
           <div className="feature-card">
             <h3>Genre Library</h3>
