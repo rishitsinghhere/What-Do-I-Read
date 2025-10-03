@@ -5,6 +5,31 @@ import * as FaIcons from "react-icons/fa";
 
 // AUTH PAGE - User login and registration with validation
 
+const validatePassword = (password) => {
+  const minLength = 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+  if (password.length < minLength) {
+    return `Password must be at least ${minLength} characters long.`;
+  }
+  if (!hasUpperCase) {
+    return "Password must contain at least one uppercase letter.";
+  }
+  if (!hasLowerCase) {
+    return "Password must contain at least one lowercase letter.";
+  }
+  if (!hasNumber) {
+    return "Password must contain at least one number.";
+  }
+  if (!hasSpecialChar) {
+    return "Password must contain at least one special character (e.g., !@#$).";
+  }
+  return null; // Password is valid
+};
+
 export default function Auth() {
   const [mode, setMode] = useState("login");
   const { login, register } = useAuth();
@@ -20,6 +45,13 @@ export default function Auth() {
   const submit = async (e) => {
     e.preventDefault();
     setError("");
+    if (mode !== "login") {
+        const validationError = validatePassword(password);
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+    }
     setIsLoading(true);
     try {
       if (mode === "login") {

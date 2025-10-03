@@ -4,6 +4,22 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { getDB } = require("../db");
 
+const validatePassword = (password) => {
+  const minLength = 8;
+  // This RegExp matches at least one of these characters: !@#$%^&*()_+-=[]{};':"\\|,.<>/?
+  const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/; 
+
+  if (password.length < minLength || 
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password) ||
+      !/[0-9]/.test(password) ||
+      !specialCharRegex.test(password)) 
+  {
+      return 'Password must be 8+ characters and include uppercase, lowercase, number, and special character.';
+  }
+  return null; // Password is valid
+};
+
 // POST /api/auth/register
 router.post("/register", async (req, res) => {
   try {
@@ -12,6 +28,11 @@ router.post("/register", async (req, res) => {
 
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Please provide all fields" });
+    }
+
+    const validationError = validatePassword(password);
+    if (validationError) {
+        return res.status(400).json({ message: validationError });
     }
 
     const existingUser = await db
