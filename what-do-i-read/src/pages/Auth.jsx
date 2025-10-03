@@ -21,7 +21,6 @@ export default function Auth() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
     try {
       if (mode === "login") {
         await login(email, password);

@@ -1,53 +1,66 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import BookCard from "../components/BookCard";
-import * as Realm from "realm-web";
-import { getAnonymousUser } from "../auth";
+import { getAllGenres, getBooksByGenres } from "../services/api";
 
 export default function SelectGenres() {
   const [genres, setGenres] = useState([]);
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState([]); // Start with an empty array of books
   const [selected, setSelected] = useState([]);
+  const [isLoadingBooks, setIsLoadingBooks] = useState(false); // Separate loading state for books
 
-  const toggle = (id) =>
-    setSelected((s) =>
-      s.includes(id) ? s.filter((x) => x !== id) : [...s, id]
-    );
+  const toggle = (id) => {
+    const newSelection = selected.includes(id)
+      ? selected.filter((x) => x !== id)
+      : [...selected, id];
+      
+    console.log("1. Component State Updated:", newSelection); // <-- ADD THIS LOG
+    setSelected(newSelection);
+  };
 
+  // This useEffect fetches books ONLY when the `selected` genres change
   useEffect(() => {
-    async function fetchData() {
-      const user = await getAnonymousUser();
+    const fetchBooks = async () => {
+      // If no genres are selected, just show an empty list.
+      if (selected.length === 0) {
+        setBooks([]);
+        return;
+      }
 
-      const mongodb = user.mongoClient("mongodb-atlas");
-      const db = mongodb.db("What-Do-I-Read");
-      const booksCollection = db.collection("books");
-      const genresCollection = db.collection("genres");
+      setIsLoadingBooks(true);
+      try {
+        const fetchedBooks = await getBooksByGenres(selected);
+        setBooks(fetchedBooks);
+      } catch (error) {
+        console.error("Failed to fetch books:", error);
+      } finally {
+        setIsLoadingBooks(false);
+      }
+    };
 
-      const [fetchedGenres, fetchedBooks] = await Promise.all([
-        genresCollection.find({}),
-        booksCollection.find({}),
-      ]);
+    fetchBooks();
+  }, [selected]); // This is the crucial part: it re-runs ONLY when `selected` changes
 
-      setGenres(fetchedGenres);
-      setBooks(fetchedBooks);
-    }
-    fetchData();
+  // This useEffect runs only ONCE to fetch the list of available genres
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const fetchedGenres = await getAllGenres();
+        setGenres(fetchedGenres);
+      } catch (error) {
+        console.error("Failed to fetch genres:", error);
+      }
+    };
+    fetchGenres();
   }, []);
-
-  const results = useMemo(() => {
-    if (!selected.length) return books.slice(0, 12);
-    return books.filter((b) => selected.includes(b.genreId));
-  }, [selected, books]);
 
   return (
     <>
-      <div class="container-selectgenres">
+      <div className="container-selectgenres">
         <h2 style={{ margin: "10px 0 8px" }}>Select Genres</h2>
         <p className="muted" style={{ marginTop: 0 }}>
           Pick one or many
         </p>
-
         <hr style={{ marginTop: 40, borderColor: "transparent" }} />
-
         <div className="row" style={{ marginBottom: 14 }}>
           {genres.map((g) => (
             <button
@@ -62,7 +75,6 @@ export default function SelectGenres() {
             Clear
           </button>
         </div>
-
         <hr
           style={{
             marginTop: 50,
@@ -71,11 +83,14 @@ export default function SelectGenres() {
             borderWidth: "2px",
           }}
         />
-
         <div className="grid grid-5">
-          {results.map((b) => (
-            <BookCard key={b.id} book={b} />
-          ))}
+          {isLoadingBooks ? (
+            <p>Loading books...</p>
+          ) : books.length > 0 ? (
+            books.map((b) => <BookCard key={b.id} book={b} />)
+          ) : (
+            <p>Select a genre to see matching books.</p>
+          )}
         </div>
       </div>
     </>

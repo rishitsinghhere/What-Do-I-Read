@@ -1,61 +1,28 @@
-import { useState, useEffect } from "react";
+// in /src/pages/Profile.jsx
+
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useLibrary } from "../context/LibraryContext";
 import BookCard from "../components/BookCard";
-import { getAnonymousUser } from "../auth";
 
 export default function Profile() {
   const { user, updateProfile } = useAuth();
-  const { playlists, renamePlaylist, removePlaylist, createPlaylist, saved } =
-    useLibrary();
+  // We will get all necessary book data from the LibraryContext
+  const { playlists, renamePlaylist, removePlaylist, createPlaylist, booksById } = useLibrary();
 
-  const [username, setUsername] = useState(user?.name || "");
-  const [email] = useState(user?.email || "");
+  // Initialize username from the user object in the context
+  const [username, setUsername] = useState(user?.username || "");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const [booksById, setBooksById] = useState({});
-
-  useEffect(() => {
-    async function fetchBooks() {
-      try {
-        const anonUser = await getAnonymousUser();
-        const mongodb = anonUser.mongoClient("mongodb-atlas");
-        const booksCollection = mongodb
-          .db("What-Do-I-Read")
-          .collection("books");
-
-        const allIds = [
-          ...Object.keys(saved),
-          ...playlists.flatMap((pl) => pl.bookIds || []),
-        ];
-
-        if (allIds.length === 0) return;
-
-        const fetchedBooks = await booksCollection.find({
-          id: { $in: allIds },
-        });
-
-        const map = {};
-        fetchedBooks.forEach((b) => {
-          map[b.id] = b;
-        });
-
-        setBooksById(map);
-      } catch (err) {
-        console.error("Error fetching books:", err);
-      }
-    }
-
-    fetchBooks();
-  }, [saved, playlists]);
+  // No more manual book fetching is needed here! The LibraryContext handles that.
 
   const handleSaveProfile = async () => {
     setIsLoading(true);
     setMessage("");
-
     try {
-      await updateProfile({ name: username });
+      // The context function now handles the API call
+      await updateProfile({ username: username });
       setMessage("Profile updated successfully!");
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
@@ -64,44 +31,26 @@ export default function Profile() {
       setIsLoading(false);
     }
   };
+  
+  // If there's no user, you might want to show a message or redirect
+  if (!user) {
+    return <div className="container-profile"><p>Please log in to view your profile.</p></div>;
+  }
 
   return (
     <div className="container-profile">
       <h2 className="profile-title">Profile</h2>
-
       <div className="grid grid-2">
-        {/* Profile card */}
+        {/* Profile card (no logic changes needed, just uses context data) */}
         <div className="profile-card profile-card-padding">
           <div>
-            {message && (
-              <div
-                className={`profile-message ${
-                  message.includes("Error") ? "error" : "success"
-                }`}
-              >
-                {message}
-              </div>
-            )}
-
+            {message && <div className={`profile-message ${message.includes("Error") ? "error" : "success"}`}>{message}</div>}
             <div className="label label-small">Username</div>
-            <input
-              className="input input-margin"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              maxLength={15}
-              pattern="[a-zA-Z0-9]+"
-              title="Username can only contain letters and numbers (max 15 characters)"
-            />
-
+            <input className="input input-margin" value={username} onChange={(e) => setUsername(e.target.value)} />
             <div className="label label-small">Email</div>
-            <input className="input input-disabled" value={email} disabled />
-
+            <input className="input input-disabled" value={user.email} disabled />
             <div className="row">
-              <button
-                className="btn primary"
-                onClick={handleSaveProfile}
-                disabled={isLoading}
-              >
+              <button className="btn primary" onClick={handleSaveProfile} disabled={isLoading}>
                 {isLoading ? "Updating..." : "Update"}
               </button>
             </div>
@@ -113,59 +62,37 @@ export default function Profile() {
           <h3 className="genre-name">Saved Books</h3>
           <div className="row row-margin-top">
             <div className="list-h-profile list-h-profile-margin">
-              {Object.keys(saved).map((id) => {
+              {/* `user.savedBooks` should contain an array of book IDs */}
+              {user.savedBooks && user.savedBooks.map((id) => {
                 const b = booksById[id];
-                return b ? (
-                  <div key={id} className="book-wrapper-200">
-                    <BookCard book={b} />
-                  </div>
-                ) : null;
+                return b ? <div key={id} className="book-wrapper-200"><BookCard book={b} /></div> : null;
               })}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Libraries */}
+      {/* Libraries (no logic changes needed) */}
       <div className="row row-library-header">
         <h3 className="genre-name">Libraries</h3>
-        <button
-          className="btn"
-          onClick={() => {
-            const playlistName = prompt("Playlist name");
-            if (playlistName) createPlaylist(playlistName);
-          }}
-        >
+        <button className="btn" onClick={() => { const name = prompt("Playlist name"); if (name) createPlaylist(name); }}>
           New Library
         </button>
       </div>
-
-      {playlists
-        .filter((pl) => pl.name !== "Saved")
-        .map((pl) => (
-          <div key={pl.id} className="profile-card profile-card-playlist">
-            <div className="row" style={{ justifyContent: "space-between" }}>
-              <input
-                className="input input-playlist-width"
-                value={pl.name}
-                onChange={(e) => renamePlaylist(pl.id, e.target.value)}
-              />
-              <button className="btn" onClick={() => removePlaylist(pl.id)}>
-                Delete
-              </button>
-            </div>
-            <div className="list-h list-h-margin-top">
-              {pl.bookIds.map((id) => {
-                const b = booksById[id];
-                return b ? (
-                  <div key={id} className="book-wrapper-130">
-                    <BookCard book={b} />
-                  </div>
-                ) : null;
-              })}
-            </div>
+      {playlists.filter((pl) => pl.name !== "Saved").map((pl) => (
+        <div key={pl.id} className="profile-card profile-card-playlist">
+          <div className="row" style={{ justifyContent: "space-between" }}>
+            <input className="input input-playlist-width" value={pl.name} onChange={(e) => renamePlaylist(pl.id, e.target.value)} />
+            <button className="btn" onClick={() => removePlaylist(pl.id)}>Delete</button>
           </div>
-        ))}
+          <div className="list-h list-h-margin-top">
+            {pl.bookIds.map((id) => {
+              const b = booksById[id];
+              return b ? <div key={id} className="book-wrapper-130"><BookCard book={b} /></div> : null;
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

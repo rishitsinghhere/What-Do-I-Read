@@ -1,34 +1,40 @@
+// in /src/pages/Home.jsx
+
 import { useNavigate } from "react-router-dom";
 import BookCard from "../components/BookCard";
 import { useEffect, useRef, useState } from "react";
-import { getAnonymousUser } from "../auth";
-import * as Realm from "realm-web";
+// --- CHANGE #1: Remove all Realm and auth imports ---
+// import { getAnonymousUser } from "../auth";
+// import * as Realm from "realm-web";
+
+// --- CHANGE #2: Import the new API function ---
+import { getFeaturedBooks } from "../services/api";
+
 
 export default function Home() {
   const nav = useNavigate();
   const [featured, setFeatured] = useState([]);
 
-  // Refs for auto-scrolling marquee
+  // --- All your refs and animation logic remain untouched ---
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
   const xRef = useRef(0);
   const halfWRef = useRef(0);
 
+  // --- CHANGE #3: Update the data fetching useEffect ---
   useEffect(() => {
     async function fetchBooks() {
-      const user = await getAnonymousUser();
-
-      const mongodb = user.mongoClient("mongodb-atlas");
-      const booksCollection = mongodb.db("What-Do-I-Read").collection("books");
-
-      const allBooks = await booksCollection.find({});
-      const shuffled = allBooks.sort(() => 0.5 - Math.random());
-      setFeatured(shuffled.slice(0, 10));
+      try {
+        const featuredBooks = await getFeaturedBooks();
+        setFeatured(featuredBooks);
+      } catch (error) {
+        console.error("Error fetching featured books:", error);
+      }
     }
-
     fetchBooks();
   }, []);
 
+  // --- No changes needed for the animation useEffect ---
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -69,6 +75,7 @@ export default function Home() {
 
   const looped = [...featured, ...featured];
 
+  // --- No changes needed for your JSX below this line ---
   return (
     <>
       {/* Background video */}
@@ -81,15 +88,12 @@ export default function Home() {
       {/* HOME CONTENT */}
       <div className="container-home">
         {/* TITLE */}
-
         <div className="home-title">
           <h1>What Do I Read ?</h1>
-
           <p className="subtitle">
             Your personalized gateway to new books, genres, and reading
             journeys.
           </p>
-
           <button className="btn primary" onClick={() => nav("/select-genres")}>
             Select Genres
           </button>

@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useLibrary } from "../context/LibraryContext";
-import { createBookNote, updateBookNote } from "../mongo";
+import { createNote, updateNote } from "../services/api";
 
-// NOTES POPUP COMPONENT - Modal for creating and editing book notes
-
-export default function NotesPopup({ 
-  isOpen, 
-  onClose, 
-  bookId, 
-  totalPages, 
-  editNote = null, 
-  onNoteSaved 
+export default function NotesPopup({
+  isOpen,
+  onClose,
+  bookId,
+  totalPages,
+  editNote = null,
+  onNoteSaved,
 }) {
-  const { user } = useAuth();
+  const { user, token } = useAuth(); // Assuming your AuthContext provides the token
   const { saved, toggleSave } = useLibrary();
   const [page, setPage] = useState(editNote?.page || "");
   const [description, setDescription] = useState(editNote?.description || "");
@@ -35,7 +33,7 @@ export default function NotesPopup({
 
   const handleSave = async () => {
     setError("");
-    const pageNumber = Number(page);
+    const pageNumber = Number(page); // --- Validation Logic (remains the same) ---
 
     if (!page || !description.trim()) {
       setError("Please fill in both page number and description.");
@@ -49,61 +47,64 @@ export default function NotesPopup({
       alert(`Page number cannot be greater than total pages (${totalPages})`);
       return;
     }
-    if (!user?._id) {
+    if (!user?.id) {
       setError("Please log in to save notes.");
       return;
     }
 
     setIsLoading(true);
     try {
-      let savedNote;
-      
+      let savedNote; // --- API Call Logic (Logic Changes Only) ---
+
       if (editNote) {
-        savedNote = await updateBookNote(editNote._id, {
-          page: pageNumber,
-          description: description.trim(),
-          updatedAt: new Date()
-        });
+        // UPDATE NOTE
+        savedNote = await updateNote(
+          editNote.id,
+          {
+            page: pageNumber,
+            description: description.trim(),
+          },
+          token
+        );
       } else {
-        savedNote = await createBookNote({
-          bookId,
-          userId: user._id,
-          page: pageNumber,
-          description: description.trim(),
-          createdAt: new Date()
-        });
+        // CREATE NEW NOTE
+        savedNote = await createNote(
+          {
+            bookId,
+            // FIX: RESTORE sending userId for the note document creation
+            userId: user.id,
+            id: new Date().getTime().toString(), // Generate custom ID on client
+            page: pageNumber, // Ensure page is sent as a number
+            description: description.trim(),
+          },
+          token
+        ); // Auto-save logic (no change)
 
         const isBookSaved = !!saved[bookId];
         if (!isBookSaved) {
           try {
             await toggleSave(bookId);
-            console.log("Book automatically saved when creating note");
           } catch (error) {
             console.error("Error auto-saving book:", error);
           }
         }
       }
-      
+
       onNoteSaved(savedNote);
       onClose();
     } catch (err) {
       console.error("Error saving note:", err);
-      setError("Failed to save note. Please try again.");
+      setError(err.message || "Failed to save note. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
-
+  // --- No changes are needed to your JSX below this line ---
   return (
     <div className="notes-modal" onClick={onClose}>
       <div className="notes-panel" onClick={(e) => e.stopPropagation()}>
-        {/* Modal Header */}
         <h3>{editNote ? "Edit Note" : "Add Note"}</h3>
-
-        {/* Error Message */}
         {error && <div className="notes-error">{error}</div>}
-
-        {/* Page Number Input */}
         <div className="form-row">
           <div className="label notes-form-label">Page Number</div>
           <input
@@ -115,12 +116,8 @@ export default function NotesPopup({
             onChange={(e) => setPage(e.target.value)}
             placeholder={`Enter page (1-${totalPages})`}
           />
-          <small className="notes-page-info">
-            Book has {totalPages} pages
-          </small>
+          <small className="notes-page-info">Book has {totalPages} pages</small>
         </div>
-
-        {/* Description Input */}
         <div className="form-row">
           <div className="label notes-form-label">Description</div>
           <textarea
@@ -131,10 +128,12 @@ export default function NotesPopup({
             rows="4"
           />
         </div>
-
-        {/* Action Buttons */}
         <div className="row notes-buttons">
-          <button className="btn notes-btn" onClick={onClose} disabled={isLoading}>
+          <button
+            className="btn notes-btn"
+            onClick={onClose}
+            disabled={isLoading}
+          >
             Cancel
           </button>
           <button

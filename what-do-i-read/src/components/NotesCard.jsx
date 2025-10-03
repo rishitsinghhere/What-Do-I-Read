@@ -14,7 +14,7 @@ export default function NoteCard({ note, onClick, onDelete }) {
   const handleDelete = (e) => {
     e.stopPropagation();
     if (window.confirm("Are you sure you want to delete this note?")) {
-      onDelete(note._id);
+      onDelete(note.id); // Correctly uses the custom ID field
     }
   };
 

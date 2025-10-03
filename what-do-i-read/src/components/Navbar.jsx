@@ -45,7 +45,7 @@ export default function Navbar() {
           {user ? (
             <>
               <FaUserCircle className="profile-icon" onClick={() => nav("/profile")} />
-              <div className="pill">{user.name}</div>
+              <div className="pill">{user.username}</div>
               <button className="btn ghost" onClick={logout}>
                 Logout
               </button>

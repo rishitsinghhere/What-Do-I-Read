@@ -1,83 +1,60 @@
 import { useParams } from "react-router-dom";
 import BookCard from "../components/BookCard";
 import { useEffect, useState } from "react";
-import { getAnonymousUser } from "../auth";
+import { getGenrePageData } from "../services/api";
 
 // BOOKS PAGE - Displays books by genre, organized by series and standalone books
 
 export default function Books() {
   const { genreId } = useParams();
-  const [books, setBooks] = useState([]);
-  const [genreName, setGenreName] = useState("");
-  const [seriesBooks, setSeriesBooks] = useState({});
-  const [standaloneBooks, setStandaloneBooks] = useState([]);
-  const [seriesData, setSeriesData] = useState({});
+  
+  const [pageData, setPageData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchBooks() {
-      const user = await getAnonymousUser();
+    const fetchPageData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getGenrePageData(genreId);
+        setPageData(data);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+        setPageData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      const mongodb = user.mongoClient("mongodb-atlas");
-      const booksCollection = mongodb.db("What-Do-I-Read").collection("books");
-      const genresCollection = mongodb
-        .db("What-Do-I-Read")
-        .collection("genres");
-      const seriesCollection = mongodb
-        .db("What-Do-I-Read")
-        .collection("series");
-
-      const genre = await genresCollection.findOne({ id: genreId });
-      setGenreName(genre?.name || "Books");
-
-      const genreBooks = await booksCollection.find({ genreId: genreId });
-      setBooks(genreBooks);
-
-      const allSeries = await seriesCollection.find({});
-      const seriesMap = {};
-      allSeries.forEach((series) => {
-        seriesMap[series.id] = series;
-      });
-      setSeriesData(seriesMap);
-
-      const grouped = {};
-      const standalone = [];
-
-      genreBooks.forEach((book) => {
-        if (book.seriesName) {
-          if (!grouped[book.seriesName]) {
-            grouped[book.seriesName] = [];
-          }
-          grouped[book.seriesName].push(book);
-        } else {
-          standalone.push(book);
-        }
-      });
-
-      Object.keys(grouped).forEach((seriesName) => {
-        grouped[seriesName].sort(
-          (a, b) => (a.seriesOrder || 0) - (b.seriesOrder || 0)
-        );
-      });
-
-      setSeriesBooks(grouped);
-      setStandaloneBooks(standalone);
-    }
-
-    fetchBooks();
+    fetchPageData();
   }, [genreId]);
+
+  if (isLoading) {
+    return <div className="container-books"><p>Loading...</p></div>;
+  }
+
+  if (!pageData || (pageData.standaloneBooks.length === 0 && Object.keys(pageData.seriesBooks).length === 0)) {
+    return (
+      <div className="container-books">
+        <h2 className="books-page-title">{pageData?.genreName || "Books"}</h2>
+        <hr className="books-page-divider" />
+        <div className="books-no-books">
+          <p>No books found in this genre.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container-books">
-      {/* Page Title */}
-      <h2 className="books-page-title">{genreName || "Books"}</h2>
+      <h2 className="books-page-title">{pageData.genreName}</h2>
       <hr className="books-page-divider" />
 
       {/* Standalone Books Section */}
-      {standaloneBooks.length > 0 && (
+      {pageData.standaloneBooks.length > 0 && (
         <div className="books-standalone-section">
           <h3 className="books-standalone-title">Standalone Books</h3>
           <div className="grid grid-5">
-            {standaloneBooks.map((book) => (
+            {pageData.standaloneBooks.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
           </div>
@@ -85,25 +62,19 @@ export default function Books() {
       )}
 
       {/* Series Sections */}
-      {Object.keys(seriesBooks).map((seriesName) => (
-        <div key={seriesName} className="series-section">
-          <h3 className="books-series-title">
-            {seriesData[seriesName]?.name || seriesName}
-          </h3>
-          <div className="grid grid-5 books-series-grid">
-            {seriesBooks[seriesName].map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
+      {Object.keys(pageData.seriesBooks).map((seriesId) => {
+        const series = pageData.seriesBooks[seriesId];
+        return (
+          <div key={seriesId} className="series-section">
+            <h3 className="books-series-title">{series.name}</h3>
+            <div className="grid grid-5 books-series-grid">
+              {series.books.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
-
-      {/* No Books Found */}
-      {books.length === 0 && (
-        <div className="books-no-books">
-          <p>No books found in this genre.</p>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 }

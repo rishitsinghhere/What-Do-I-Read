@@ -1,41 +1,42 @@
 import { useState, useEffect } from "react";
 import GenreCard from "../components/GenreCard";
 import BookCard from "../components/BookCard";
-import * as Realm from "realm-web";
+// Change #1: Import the new, more specific API function
+import { getGenresWithBookPreviews } from "../services/api";
 
 export default function Genres() {
+  // Change #2: State is simpler. We only need to store the genres.
   const [genres, setGenres] = useState([]);
-  const [booksByGenre, setBooksByGenre] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      const app = new Realm.App({ id: "what-do-i-read-uxbmken" });
-      const mongo =
-        app.currentUser?.mongoClient("mongodb-atlas") ||
-        (await app.logIn(Realm.Credentials.anonymous())).mongoClient(
-          "mongodb-atlas"
-        );
-
-      const genresCollection = mongo.db("What-Do-I-Read").collection("genres");
-      const booksCollection = mongo.db("What-Do-I-Read").collection("books");
-
-      const genresData = await genresCollection.find({});
-      const booksData = await booksCollection.find({});
-
-      const grouped = {};
-      genresData.forEach((genre) => {
-        grouped[genre.id] = booksData.filter(
-          (book) => book.genreId === genre.id
-        );
-      });
-
-      setGenres(genresData);
-      setBooksByGenre(grouped);
-    }
+    // Change #3: Fetching logic is now a single, efficient API call
+    const fetchData = async () => {
+      try {
+        const genresWithPreviews = await getGenresWithBookPreviews();
+        setGenres(genresWithPreviews);
+      } catch (err) {
+        console.error("Failed to fetch page data:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchData();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
+
+  // The JSX below is the same, but now uses the `bookPreviews`
+  // array that comes directly from the API.
   return (
     <div className="container-genres">
       <h1 className="genres-title">Genres</h1>
@@ -56,7 +57,8 @@ export default function Genres() {
           </div>
 
           <div className="grid grid-5 books-grid">
-            {(booksByGenre[genre.id] || []).slice(0, 5).map((book) => (
+            {/* Use the `bookPreviews` array provided by the API */}
+            {(genre.bookPreviews || []).map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
           </div>

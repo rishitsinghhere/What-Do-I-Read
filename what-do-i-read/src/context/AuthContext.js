@@ -1,68 +1,90 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { registerUser, loginUser, updateUserProfile } from "../mongo";
-
-// AUTH CONTEXT - Manages user authentication state and operations
+// --- FIX #1: Give the imported functions aliases to prevent naming conflicts ---
+// UNCOMMENT THIS LINE:
+import { 
+  register as apiRegister, 
+  login as apiLogin, 
+  updateUserProfile as apiUpdateProfile 
+} from "../services/api"; 
 
 const AuthCtx = createContext(null);
-const KEY = "wdir_user";
+const USER_KEY = "wdir_user";
+const TOKEN_KEY = "wdir_token";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(USER_KEY);
     return raw ? JSON.parse(raw) : null;
   });
 
-  // Persist user data to localStorage
-  useEffect(() => {
-    if (user) localStorage.setItem(KEY, JSON.stringify(user));
-    else localStorage.removeItem(KEY);
-  }, [user]);
+  const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY));
 
-  // Login function
+  useEffect(() => {
+    if (user && token) {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      localStorage.setItem(TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+    }
+  }, [user, token]);
+
   const login = async (email, password) => {
     try {
-      const userData = await loginUser(email, password);
+      // --- FIX #2: Call the imported `apiLogin` function, NOT `login` itself ---
+      const { token: receivedToken, user: userData } = await apiLogin(
+        email,
+        password
+      ); // Use the alias
       setUser(userData);
+      setToken(receivedToken);
       return userData;
     } catch (error) {
+      console.error("Login failed:", error);
       throw error;
     }
   };
 
-  // Register function
   const register = async (username, email, password) => {
     try {
-      const userData = await registerUser(username, email, password);
+      // --- FIX #3: Call the imported `apiRegister` function, NOT `register` itself ---
+      const { token: receivedToken, user: userData } = await apiRegister(
+        username,
+        email,
+        password
+      ); // Use the alias
       setUser(userData);
+      setToken(receivedToken);
       return userData;
     } catch (error) {
+      console.error("Registration failed:", error);
       throw error;
     }
   };
 
-  // Update profile function
   const updateProfile = async (patch) => {
     try {
-      if (user && user._id) {
-        await updateUserProfile(user._id, patch);
-        const updatedUser = { ...user, ...patch };
-        setUser(updatedUser);
-        return updatedUser;
+      if (user && token) {
+        const updatedUserData = await apiUpdateProfile(patch, token);
+        setUser(updatedUserData);
+        return updatedUserData;
       }
     } catch (error) {
+      console.error("Failed to update profile:", error);
       throw error;
     }
   };
 
-  // Logout function
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+  };
 
-  // Memoized context value
   const value = useMemo(
-    () => ({ user, setUser, login, register, updateProfile, logout }),
-    [user]
+    () => ({ user, token, setUser, login, register, updateProfile, logout }),
+    [user, token]
   );
-  
+
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
 
