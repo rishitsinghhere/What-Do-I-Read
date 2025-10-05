@@ -1,11 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-// --- FIX #1: Give the imported functions aliases to prevent naming conflicts ---
-// UNCOMMENT THIS LINE:
-import { 
-  register as apiRegister, 
-  login as apiLogin, 
-  updateUserProfile as apiUpdateProfile 
-} from "../services/api"; 
+import {
+  register as apiRegister,
+  login as apiLogin,
+  updateUserProfile as apiUpdateProfile,
+} from "../services/api";
 
 const AuthCtx = createContext(null);
 const USER_KEY = "wdir_user";

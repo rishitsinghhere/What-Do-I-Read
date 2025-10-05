@@ -47,7 +47,6 @@ export const register = async (username, email, password) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, email, password }),
   });
-  // --- MODIFIED ERROR HANDLING ---
   if (!response.ok) {
     // Attempt to parse the JSON error body first
     let errorData = {};
@@ -62,7 +61,6 @@ export const register = async (username, email, password) => {
     } // Throw the server's specific message if available
     throw new Error(errorData.message || "Registration failed");
   } // Now that we know the response is OK, we can safely parse and return the data.
-  // ---------------------------------
 
   const data = await response.json();
   return data;
@@ -75,7 +73,6 @@ export const login = async (email, password) => {
     body: JSON.stringify({ email, password }),
   });
 
-  // --- MODIFIED ERROR HANDLING ---
   if (!response.ok) {
     let errorData = {};
     try {
@@ -87,7 +84,6 @@ export const login = async (email, password) => {
     }
     throw new Error(errorData.message || "Login failed");
   }
-  // ---------------------------------
 
   const data = await response.json();
   return data;
@@ -217,8 +213,6 @@ export const updateUserPlaylists = async (playlists, token) => {
     token,
   });
 };
-
-// --- ADD THIS FUNCTION BACK ---
 /**
  * Fetches the structured data for the books page of a specific genre.
  * @param {string} genreId The ID of the genre.
@@ -246,7 +240,6 @@ export const getFeaturedBooks = async () => {
   return await response.json();
 };
 
-// --- ADD THIS NEW FUNCTION ---
 /**
  * Searches for books by title.
  * @param {string} query The search term.

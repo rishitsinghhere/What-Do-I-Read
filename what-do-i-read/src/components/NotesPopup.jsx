@@ -11,7 +11,7 @@ export default function NotesPopup({
   editNote = null,
   onNoteSaved,
 }) {
-  const { user, token } = useAuth(); // Assuming your AuthContext provides the token
+  const { user, token } = useAuth();
   const { saved, toggleSave } = useLibrary();
   const [page, setPage] = useState(editNote?.page || "");
   const [description, setDescription] = useState(editNote?.description || "");
@@ -33,7 +33,7 @@ export default function NotesPopup({
 
   const handleSave = async () => {
     setError("");
-    const pageNumber = Number(page); // --- Validation Logic (remains the same) ---
+    const pageNumber = Number(page);
 
     if (!page || !description.trim()) {
       setError("Please fill in both page number and description.");
@@ -71,7 +71,6 @@ export default function NotesPopup({
         savedNote = await createNote(
           {
             bookId,
-            // FIX: RESTORE sending userId for the note document creation
             userId: user.id,
             id: new Date().getTime().toString(), // Generate custom ID on client
             page: pageNumber, // Ensure page is sent as a number
@@ -99,7 +98,6 @@ export default function NotesPopup({
       setIsLoading(false);
     }
   };
-  // --- No changes are needed to your JSX below this line ---
   return (
     <div className="notes-modal" onClick={onClose}>
       <div className="notes-panel" onClick={(e) => e.stopPropagation()}>
