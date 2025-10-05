@@ -4,7 +4,7 @@ import { getAllGenres, getBooksByGenres } from "../services/api";
 
 export default function SelectGenres() {
   const [genres, setGenres] = useState([]);
-  const [books, setBooks] = useState([]); // Start with an empty array of books
+  const [books, setBooks] = useState([]); // Starts with an empty array of books
   const [selected, setSelected] = useState([]);
   const [isLoadingBooks, setIsLoadingBooks] = useState(false); // Separate loading state for books
 
@@ -13,7 +13,7 @@ export default function SelectGenres() {
       ? selected.filter((x) => x !== id)
       : [...selected, id];
       
-    console.log("1. Component State Updated:", newSelection); // <-- ADD THIS LOG
+    console.log("1. Component State Updated:", newSelection); 
     setSelected(newSelection);
   };
 

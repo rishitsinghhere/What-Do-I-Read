@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config(); // Ensure dotenv is configured here as well
+require('dotenv').config(); 
 const { connectDB } = require('./db');
 const bookRoutes = require('./routes/books');
 const genreRoutes = require('./routes/genres');
@@ -24,7 +24,7 @@ const startServer = async () => {
   try {
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`🚀 Server is running and connected to DB on http://localhost:${PORT}`);
+      console.log(` Server is running and connected to DB on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);

@@ -1,4 +1,4 @@
-// The base URL of your backend server
+// The base URL of backend server
 const BASE_URL = "http://localhost:5001/api";
 
 /**
@@ -26,7 +26,7 @@ const fetchWithToken = async (url, options = {}) => {
     throw new Error(errorData.message || "Something went wrong");
   }
 
-  // Handle responses that might not have a JSON body (e.g., a DELETE request)
+  // Handle responses that might not have a JSON body 
    const contentType = response.headers.get("content-type");
    if (contentType && contentType.indexOf("application/json") !== -1) {
      return response.json();

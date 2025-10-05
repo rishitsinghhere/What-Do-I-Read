@@ -10,7 +10,7 @@ const connectDB = async () => {
   if (db) return db;
   try {
     await client.connect();
-    db = client.db("What-Do-I-Read"); // Make sure "What-Do-I-Read" is your exact database name
+    db = client.db("What-Do-I-Read"); 
     console.log("MongoDB connected successfully");
     return db;
   } catch (e) {

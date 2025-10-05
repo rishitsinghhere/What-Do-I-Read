@@ -6,7 +6,7 @@ import StarRating from "../components/StarRating";
 import NotesPopup from "../components/NotesPopup";
 import NotesCard from "../components/NotesCard";
 import { useAuth } from "../context/AuthContext";
-// --- CHANGE #1: Import from your API service, not mongo/auth ---
+
 import { getBookById, getNotesForBook, deleteNote } from "../services/api";
 
 // BOOK DETAILS PAGE - Individual book information with notes and library management
@@ -25,12 +25,12 @@ export default function BookDetails() {
 
   const isSaved = !!saved[bookId];
 
-  // --- CHANGE #2: Consolidate all data fetching into one useEffect ---
+  
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        // 1. Fetch the book details from your API
+     
         const bookData = await getBookById(bookId);
         setBook(bookData);
 
@@ -49,7 +49,7 @@ export default function BookDetails() {
     fetchData();
   }, [bookId, user, token]); // Rerun when the book or user changes
 
-  // --- CHANGE #3: Update handlers to use custom `id` ---
+  //
   const handleNoteSaved = (note) => {
     setNotes((prev) => {
       if (editNote) {
@@ -65,7 +65,7 @@ export default function BookDetails() {
     setIsPopupOpen(true);
   };
 
-  // --- CHANGE #4: Update delete handler to call the API ---
+  // 
   const handleDeleteNote = async (noteId) => {
     try {
       await deleteNote(noteId, token);

@@ -1,4 +1,3 @@
-// in /src/pages/Profile.jsx
 
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
